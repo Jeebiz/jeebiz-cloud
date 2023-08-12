@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.message.email.dao.IMailtoxSettingsDao">
+
+    <resultMap id="MailtoxSettingsMap" type="MailtoxSettingsModel">
+        <result property="id" column="S_ID"/>
+        <result property="eamil" column="S_EMAILL"/>
+        <result property="passwd" column="S_PASSWD"/>
+        <result property="domain" column="S_DOMAIN"/>
+        <result property="addr" column="S_ADDR"/>
+        <result property="port" column="S_PORT"/>
+        <result property="timeout" column="S_TIMEOUT"/>
+        <result property="remark" column="S_REMARK"/>
+        <result property="protocol" column="S_PROTOCOL"/>
+        <result property="useauth" column="S_USEAUTH"/>
+        <result property="usessl" column="S_USESSL"/>
+        <result property="status" column="S_STATUS"/>
+        <result property="debug" column="S_DEBUG"/>
+    </resultMap>
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="D_KEY"/>
+        <result property="value" column="D_TEXT"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="MailtoxSettingsModel" flushCache="true">
+        insert into SYS_DATA_MAILTOX_SETTINGS(S_EMAILL, S_PASSWD, S_DOMAIN, S_ADDR, S_PORT, S_TIMEOUT, S_REMARK,
+                                              S_PROTOCOL, S_USEAUTH, S_USESSL, S_STATUS, S_DEBUG)
+        values (#{eamil}, #{passwd}, #{domain}, #{addr}, #{port}, #{timeout}, #{remark}, #{protocol}, #{useauth},
+                #{usessl}, #{status}, #{debug})
+    </insert>
+
+    <delete id="batchDelete" flushCache="true">
+        DELETE FROM SYS_DATA_MAILTOX_SETTINGS WHERE S_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="setStatus" parameterType="java.lang.String" flushCache="true">
+        UPDATE SYS_DATA_MAILTOX_SETTINGS t
+        SET S_STATUS = #{status}
+        WHERE S_ID = #{id}
+    </update>
+
+    <update id="update" parameterType="MailtoxSettingsModel" flushCache="true">
+        UPDATE SYS_DATA_MAILTOX_SETTINGS t
+        SET S_EMAILL   = #{eamil},
+            S_PASSWD   = #{passwd},
+            S_DOMAIN   = #{domain},
+            S_ADDR     = #{addr},
+            S_PORT     = #{port},
+            S_TIMEOUT  = #{timeout},
+            S_REMARK   = #{remark},
+            S_PROTOCOL = #{protocol},
+            S_USEAUTH  = #{useauth},
+            S_USESSL   = #{usessl},
+            S_STATUS   = #{status},
+            S_DEBUG    = #{debug}
+        WHERE S_ID = #{id}
+    </update>
+
+    <select id="getPagedList" resultMap="MailtoxSettingsMap" parameterType="MailtoxSettingsModel">
+        SELECT
+        t.S_ID,
+        t.S_EMAILL,
+        t.S_PASSWD,
+        t.S_DOMAIN,
+        t.S_ADDR,
+        t.S_PORT,
+        t.S_TIMEOUT,
+        t.S_REMARK,
+        t.S_PROTOCOL,
+        t.S_USEAUTH,
+        t.S_USESSL,
+        t.S_STATUS,
+        t.S_DEBUG
+        FROM SYS_DATA_MAILTOX_SETTINGS t
+        <where>
+            <if test="model.status != null and model.status != '' ">
+                AND t.S_STATUS = #{model.status}
+            </if>
+        </where>
+    </select>
+
+    <select id="getModel" resultMap="MailtoxSettingsMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.S_ID,
+               t.S_EMAILL,
+               t.S_PASSWD,
+               t.S_DOMAIN,
+               t.S_ADDR,
+               t.S_PORT,
+               t.S_TIMEOUT,
+               t.S_REMARK,
+               t.S_PROTOCOL,
+               t.S_USEAUTH,
+               t.S_USESSL,
+               t.S_STATUS,
+               t.S_DEBUG
+        FROM SYS_DATA_MAILTOX_SETTINGS t
+        WHERE t.S_ID = #{id}
+    </select>
+
+    <select id="getPairValues" resultMap="PairMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.D_KEY, t.D_TEXT
+        FROM SYS_DATA_SETTINGS t
+        WHERE t.D_GROUP = 'MAILTOX'
+          AND t.D_STATUS = 1
+        ORDER By t.D_ORDER ASC
+    </select>
+
+    <select id="getValue" resultType="java.lang.String" parameterType="java.lang.String" useCache="false">
+        SELECT t.D_TEXT
+        FROM SYS_DATA_SETTINGS t
+        WHERE t.D_GROUP = 'MAILTOX'
+          AND t.D_KEY = #{key}
+    </select>
+
+
+</mapper>

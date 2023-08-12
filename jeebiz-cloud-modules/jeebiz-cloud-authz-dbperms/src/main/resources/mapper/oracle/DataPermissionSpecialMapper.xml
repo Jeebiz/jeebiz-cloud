@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionSpecialDao">
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="T_ID"/>
+        <result property="value" column="T_NAME"/>
+    </resultMap>
+
+    <resultMap id="DataPermsSpecialPairMap" type="DataPermissionSpecialCheckedModel">
+        <!-- 数据权限专项ID -->
+        <result property="id" column="T_ID"/>
+        <!-- 数据权限专项名称 -->
+        <result property="name" column="T_NAME"/>
+        <!-- 数据权限专项是否授权(1:已授权|0:未授权) -->
+        <result property="checked" column="T_CHECKED"/>
+    </resultMap>
+
+    <select id="getPairList" resultMap="PairMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.T_ID, t.T_NAME
+        FROM SYS_DATA_PERMS_SPCL t
+        WHERE t.T_STATUS = 1
+        ORDER BY t.T_ORDER ASC
+    </select>
+
+    <select id="getSpecialRolePairs" resultMap="DataPermsSpecialPairMap" useCache="false">
+        SELECT t.T_ID,
+               t.T_NAME,
+               (CASE
+                    WHEN (SELECT COUNT(x.R_ID)
+                          FROM SYS_DATA_PERMS_SPCL_ROLE_REL x
+                          WHERE x.R_ID = #{rid}
+                            AND x.T_ID = t.T_ID) > 0 THEN 1
+                    ELSE 0 END) T_CHECKED
+        FROM SYS_DATA_PERMS_SPCL t
+        ORDER By t.T_ORDER ASC
+    </select>
+
+    <select id="getSpecialUserPairs" resultMap="DataPermsSpecialPairMap" useCache="false">
+        SELECT t.T_ID,
+               t.T_NAME,
+               (CASE
+                    WHEN (SELECT COUNT(x.U_ID)
+                          FROM SYS_DATA_PERMS_SPCL_USER_REL x
+                          WHERE x.U_ID = #{uid}
+                            AND x.T_ID = t.T_ID) > 0 THEN 1
+                    ELSE 0 END) T_CHECKED
+        FROM SYS_DATA_PERMS_SPCL t
+        ORDER By t.T_ORDER ASC
+    </select>
+
+    <select id="getRoleRelations" resultType="java.lang.String" useCache="false">
+        SELECT t.T_ID
+        FROM SYS_DATA_PERMS_SPCL_ROLE_REL t
+        WHERE t.R_ID = #{rid}
+    </select>
+
+    <insert id="setRoleRelation" flushCache="true" useGeneratedKeys="false">
+        insert into SYS_DATA_PERMS_SPCL_ROLE_REL(APP_ID, T_ID, R_ID)
+        values (sys_guid(), #{tid}, #{rid})
+    </insert>
+
+    <delete id="deleteRoleRelation" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_SPCL_ROLE_REL t
+        WHERE t.T_ID = #{tid}
+          AND t.R_ID = #{rid}
+    </delete>
+
+    <delete id="deleteRoleRelations" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_SPCL_ROLE_REL t
+        WHERE t.R_ID = #{rid}
+    </delete>
+
+    <select id="getUserRelations" resultType="java.lang.String" useCache="false">
+        SELECT t.T_ID
+        FROM SYS_DATA_PERMS_SPCL_USER_REL t
+        WHERE t.U_ID = #{uid}
+    </select>
+
+    <insert id="setUserRelation" flushCache="true" useGeneratedKeys="false">
+        insert into SYS_DATA_PERMS_SPCL_USER_REL(APP_ID, T_ID, U_ID)
+        values (sys_guid(), #{tid}, #{uid})
+    </insert>
+
+    <delete id="deleteUserRelation" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_SPCL_USER_REL t
+        WHERE t.T_ID = #{tid}
+          AND t.U_ID = #{uid}
+    </delete>
+
+    <delete id="deleteUserRelations" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_SPCL_USER_REL t
+        WHERE t.U_ID = #{uid}
+    </delete>
+
+</mapper>

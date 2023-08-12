@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.extras.quartz.dao.IQuartzJobDao">
+
+    <resultMap id="QuartzJobMap" type="QuartzJobModel">
+        <id property="id" column="JOB_ID"/>
+        <result property="bizId" column="BIZ_ID"/>
+        <result property="group" column="JOB_GROUP"/>
+        <result property="name" column="JOB_NAME"/>
+        <result property="intro" column="JOB_INTRO"/>
+        <result property="cron" column="JOB_CRON"/>
+        <result property="clazz" column="JOB_CLASS"/>
+        <result property="start" column="JOB_START"/>
+        <result property="delay" column="JOB_DELAY"/>
+        <result property="period" column="JOB_PERIOD"/>
+        <result property="status" column="JOB_STATUS"/>
+        <result property="time24" column="TIME24"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="QuartzJobModel" flushCache="true">
+        <selectKey keyProperty="id" order="BEFORE" resultType="String">
+            SELECT sys_guid() FROM dual
+        </selectKey>
+        insert into
+        SYS_DATA_QUARTZ_JOBS(BIZ_ID,JOB_ID,JOB_GROUP,JOB_NAME,JOB_INTRO,JOB_CRON,JOB_CLASS,JOB_START,JOB_DELAY,JOB_PERIOD,JOB_STATUS)
+        values(#{bizId},#{id},#{group},#{name},#{intro,jdbcType=VARCHAR},#{cron,jdbcType=VARCHAR},#{clazz,jdbcType=VARCHAR},
+        #{start,jdbcType=VARCHAR},#{delay,jdbcType=VARCHAR},#{period,jdbcType=VARCHAR},'0')
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        delete
+        from SYS_DATA_QUARTZ_JOBS
+        where JOB_ID = #{jobId}
+    </delete>
+
+    <update id="update" parameterType="QuartzJobModel" flushCache="true">
+        update SYS_DATA_QUARTZ_JOBS t
+        <set>
+            <if test="bizId != null and bizId != ''">t.BIZ_ID = #{bizId},</if>
+            <if test="group != null and group != ''">t.JOB_GROUP = #{group},</if>
+            <if test="name != null and name != ''">t.JOB_NAME = #{name},</if>
+            <if test="intro != null and intro != ''">t.JOB_INTRO = #{intro},</if>
+            <if test="cron != null and cron != ''">t.JOB_CRON = #{cron},</if>
+            <if test="clazz != null and clazz != ''">t.JOB_CLASS = #{clazz},</if>
+            <if test="start != null and start != ''">t.JOB_START = #{start},</if>
+            <if test="delay != null and delay != ''">t.JOB_DELAY = #{delay},</if>
+            <if test="period != null and period != ''">t.JOB_PERIOD = #{period},</if>
+            <if test="status != null and status != ''">t.JOB_STATUS = #{status}</if>
+        </set>
+        where t.JOB_ID = #{id}
+    </update>
+
+    <update id="setStatus" parameterType="java.lang.String" flushCache="true">
+        UPDATE SYS_DATA_QUARTZ_JOBS t
+        SET JOB_STATUS = #{status}
+        WHERE BIZ_ID = #{id}
+    </update>
+
+    <select id="getCountByUid" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT COUNT(1)
+        FROM SYS_DATA_QUARTZ_JOBS t
+        WHERE t.BIZ_ID = #{uid}
+          AND ROWNUM = 1
+    </select>
+
+    <select id="getJobByBizId" resultMap="QuartzJobMap" parameterType="String">
+        SELECT t.BIZ_ID,
+               t.JOB_ID,
+               t.JOB_GROUP,
+               t.JOB_NAME,
+               t.JOB_INTRO,
+               t.JOB_CLASS,
+               t.JOB_CRON,
+               t.JOB_START,
+               t.JOB_DELAY,
+               t.JOB_PERIOD,
+               t.JOB_STATUS,
+               t.TIME24
+        FROM SYS_DATA_QUARTZ_JOBS t
+        WHERE t.BIZ_ID = #{id}
+    </select>
+
+    <select id="getModel" resultMap="QuartzJobMap" parameterType="String">
+        SELECT t.BIZ_ID,
+               t.JOB_ID,
+               t.JOB_GROUP,
+               t.JOB_NAME,
+               t.JOB_INTRO,
+               t.JOB_CLASS,
+               t.JOB_CRON,
+               t.JOB_START,
+               t.JOB_DELAY,
+               t.JOB_PERIOD,
+               t.JOB_STATUS,
+               t.TIME24
+        FROM SYS_DATA_QUARTZ_JOBS t
+        WHERE t.JOB_ID = #{id}
+    </select>
+
+    <select id="getPagedList" resultMap="QuartzJobMap" parameterType="QuartzJobModel" useCache="false">
+        SELECT t.BIZ_ID,
+        t.JOB_ID,
+        t.JOB_GROUP,
+        t.JOB_NAME,
+        t.JOB_INTRO,
+        t.JOB_CLASS,
+        t.JOB_CRON,
+        t.JOB_START,
+        t.JOB_DELAY,
+        t.JOB_PERIOD,
+        t.JOB_STATUS,
+        t.TIME24
+        FROM SYS_DATA_QUARTZ_JOBS t
+        <if test="model.bizId != null and model.bizId != '' ">
+            AND t.BIZ_ID = #{model.bizId}
+        </if>
+        <if test="model.status != null and model.status != '' ">
+            AND t.JOB_STATUS = #{model.status}
+        </if>
+        <if test="model.name != null and model.name != '' ">
+            AND t.JOB_NAME like '%'|| #{model.name} ||'%'
+        </if>
+    </select>
+
+    <select id="getJobList" resultMap="QuartzJobMap" parameterType="QuartzJobModel" useCache="false">
+        SELECT t.BIZ_ID,
+               t.JOB_ID,
+               t.JOB_GROUP,
+               t.JOB_NAME,
+               t.JOB_INTRO,
+               t.JOB_CLASS,
+               t.JOB_CRON,
+               t.JOB_START,
+               t.JOB_DELAY,
+               t.JOB_PERIOD,
+               t.JOB_STATUS,
+               t.TIME24
+        FROM SYS_DATA_QUARTZ_JOBS t
+        WHERE t.JOB_STATUS = 0
+    </select>
+
+</mapper>

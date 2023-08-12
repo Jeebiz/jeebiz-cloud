@@ -1,0 +1,14 @@
+server:
+  port: 8070
+spring:
+  application:
+    name: wisdom-webflux-demo
+  cloud:
+    nacos:
+      config:
+        namespace: jeebiz
+        server-addr: 192.168.31.103:8848
+      discovery:
+        namespace: jeebiz
+        server-addr: 192.168.31.103:8848
+        

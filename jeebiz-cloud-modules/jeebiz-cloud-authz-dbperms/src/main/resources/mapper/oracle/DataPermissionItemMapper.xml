@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionItemDao">
+
+    <!-- 开启二级缓存 -->
+    <cache-ref namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionDao"/>
+
+    <resultMap id="DataPermsItemMap" type="DataPermissionItemModel">
+        <!-- 数据权限ID -->
+        <result property="pid" column="P_ID"/>
+        <!-- 数据权限项ID -->
+        <result property="id" column="I_ID"/>
+        <!-- 受限表字段名称（实体表字段列名称） -->
+        <result property="column" column="I_COLUMN"/>
+        <!-- 受限表字段名称（实体表字段中文名称） -->
+        <result property="name" column="I_NAME"/>
+        <!-- 受限表字段中文拼音 -->
+        <result property="pinyin" column="I_PINYIN"/>
+        <!-- 受限表字段与限制条件之间的关联条件 -->
+        <result property="condition" column="I_CONDITION"/>
+        <!-- 受限表字段限制条件  -->
+        <result property="perms" column="I_PERMS"/>
+        <!-- 受限表字段可用状态:（0:不可用|1：可用） -->
+        <result property="status" column="I_STATUS"/>
+        <!-- 受限表字段排序 -->
+        <result property="order" column="I_ORDER"/>
+    </resultMap>
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="COL_NAME"/>
+        <result property="value" column="COL_LABEL"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="DataPermissionItemModel" flushCache="true">
+        insert into SYS_DATA_PERMS_ITEM(P_ID, I_COLUMN, I_NAME, I_PINYIN, I_CONDITION, I_PERMS, I_STATUS, I_ORDER)
+        values (#{pid}, #{column}, #{name}, #{pinyin}, #{condition}, #{perms}, #{status}, #{order})
+    </insert>
+
+    <delete id="delete" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_ITEM t
+        WHERE t.I_ID = #{id}
+    </delete>
+
+    <delete id="deleteByPid" parameterType="java.lang.String" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_ITEM t
+        WHERE t.P_ID = #{pid}
+    </delete>
+
+    <delete id="batchDelete" flushCache="true">
+        DELETE FROM SYS_DATA_PERMS_ITEM t WHERE t.I_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <update id="setStatus" parameterType="java.lang.String" flushCache="true">
+        UPDATE SYS_DATA_PERMS_ITEM t
+        SET t.I_STATUS = #{status}
+        WHERE t.I_ID = #{id}
+    </update>
+
+    <update id="update" parameterType="DataPermissionItemModel" flushCache="true">
+        UPDATE SYS_DATA_PERMS_ITEM t
+        SET t.P_ID        = #{pid},
+            t.I_COLUMN    = #{column},
+            t.I_NAME      = #{name},
+            t.I_PINYIN    = #{pinyin},
+            t.I_CONDITION = #{condition},
+            t.I_PERMS     = #{perms},
+            t.I_STATUS    = #{status},
+            t.I_ORDER     = #{order}
+        WHERE t.I_ID = #{id}
+    </update>
+
+    <select id="getPagedList" resultMap="DataPermsItemMap" parameterType="java.lang.String" useCache="false">
+        SELECT
+        t.P_ID,
+        t.I_ID,
+        t.I_COLUMN,
+        t.I_NAME,
+        t.I_PINYIN,
+        t.I_CONDITION,
+        t.I_PERMS,
+        t.I_STATUS,
+        t.I_ORDER
+        FROM SYS_DATA_PERMS_ITEM t
+        <where>
+            <if test="model.pid != null and model.pid != ''">
+                and t.P_ID = #{pid}
+            </if>
+            <if test="model.name != null and model.name != ''">
+                and t.I_NAME like '%'|| #{model.name} || '%'
+            </if>
+            <if test="model.status != null and model.status != ''">
+                and t.I_STATUS = #{model.status}
+            </if>
+        </where>
+        ORDER By t.I_ORDER ASC
+    </select>
+
+    <select id="getPairValues" resultMap="PairMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.I_ID, t.I_NAME
+        FROM SYS_DATA_PERMS_ITEM t
+        WHERE t.P_ID = #{key}
+          AND t.I_STATUS = 1
+        ORDER By t.I_ORDER ASC
+    </select>
+
+</mapper>

@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.hiwepy.boot.authz.rbac0.dao.IAuthzRoleDao">
+
+    <resultMap id="RoleMap" type="AuthzRoleModel">
+        <result property="id" column="R_ID"/>
+        <result property="name" column="R_NAME"/>
+        <result property="type" column="R_INTRO"/>
+        <result property="intro" column="R_TYPE"/>
+        <result property="status" column="R_STATUS"/>
+        <result property="users" column="R_USERS"/>
+        <result property="time24" column="R_TIME24"/>
+    </resultMap>
+
+    <resultMap id="UserDetailMap" type="AuthzUserDetailModel">
+        <result property="userId" column="U_ID"/>
+        <result property="username" column="U_USERNAME"/>
+        <result property="password" column="U_PASSWORD"/>
+        <result property="phone" column="U_PHONE"/>
+        <result property="email" column="U_EMAIL"/>
+        <result property="status" column="U_STATUS"/>
+        <result property="time24" column="U_TIME24"/>
+        <result property="id" column="D_ID"/>
+        <result property="nickname" column="D_NICKNAME"/>
+        <result property="gender" column="D_BIRTHDAY"/>
+        <result property="birthday" column="D_GENDER"/>
+        <result property="idcard" column="D_IDCARD"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="AuthzRoleModel">
+        <selectKey keyProperty="id" order="BEFORE" resultType="java.lang.String">
+            SELECT IFNULL(MAX(R_ID), 0) + 1 FROM t_ROLE_LIST
+        </selectKey>
+        insert into t_ROLE_LIST(R_ID,R_NAME,R_TYPE,R_INTRO,R_STATUS)
+        values(#{id},#{name},#{type},#{intro},'1')
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE
+        FROM t_ROLE_LIST
+        WHERE R_ID = #{id}
+    </delete>
+
+    <update id="update" parameterType="AuthzRoleModel">
+        update t_ROLE_LIST t
+        <set>
+            <if test="name != null and name != ''">t.R_NAME = #{name},</if>
+            <if test="type != null and type != ''">t.R_TYPE = #{type},</if>
+            <if test="intro != null and intro != ''">t.R_INTRO = #{intro},</if>
+            <if test="status != null and status != ''">t.R_STATUS = #{status},</if>
+        </set>
+        where t.R_ID = #{id}
+    </update>
+
+    <select id="getModel" resultMap="RoleMap" parameterType="java.lang.String">
+        SELECT t.R_ID,
+               t.R_NAME,
+               t.R_TYPE,
+               t.R_INTRO,
+               t.R_STATUS,
+               (SELECT COUNT(x.R_ID) FROM t_USER_ROLE_RELATION x WHERE x.R_ID = t.R_ID) as R_USERS,
+               t.R_TIME24
+        FROM t_ROLE_LIST t
+        WHERE t.R_ID = #{id}
+    </select>
+
+    <select id="getPagedList" resultMap="RoleMap" parameterType="AuthzRoleModel">
+        SELECT
+        t.R_ID,
+        t.R_NAME,
+        t.R_TYPE,
+        t.R_INTRO,
+        t.R_STATUS,
+        (SELECT COUNT(x.R_ID) FROM t_USER_ROLE_RELATION x WHERE x.R_ID = t.R_ID) as R_USERS,
+        t.R_TIME24
+        FROM t_ROLE_LIST t
+        <where>
+            <if test="model.status != null and model.status != ''">
+                and t.R_STATUS = #{model.status}
+            </if>
+            <if test="model.type != null and model.type != ''">
+                and t.R_TYPE = #{model.type}
+            </if>
+            <if test="model.name != null and model.name != ''">
+                and t.R_NAME like CONCAT('%',#{model.name},'%')
+            </if>
+        </where>
+    </select>
+
+    <insert id="setUsers">
+        insert into t_USER_ROLE_RELATION(U_ID,R_ID)
+        values
+        <foreach collection="userIds" item="item" separator=",">
+            (#{roleId},#{item})
+        </foreach>
+    </insert>
+
+    <delete id="deleteUsers">
+        DELETE FROM t_USER_ROLE_RELATION WHERE R_ID = #{roleId}
+        <foreach collection="userIds" item="item" separator=" OR " open=" AND ( " close=")">
+            U_ID = #{item}
+        </foreach>
+    </delete>
+
+    <insert id="setPerms">
+        insert into t_ROLE_PERMS(R_ID,PERMS)
+        values
+        <foreach collection="perms" item="item" separator=",">
+            (#{roleId},#{item})
+        </foreach>
+    </insert>
+
+    <delete id="deletePerms">
+        DELETE FROM t_ROLE_PERMS WHERE R_ID = #{roleId}
+        <foreach collection="perms" item="item" separator=" OR " open=" AND ( " close=")">
+            PERMS = #{item}
+        </foreach>
+    </delete>
+
+    <select id="getPermissions" resultType="java.lang.String" parameterType="java.lang.String">
+        SELECT t.PERMS AS perms
+        FROM t_ROLE_PERMS t
+        WHERE t.R_ID = #{roleId}
+    </select>
+
+    <select id="getPagedAllocatedList" resultMap="UserDetailMap" parameterType="AuthzRoleModel">
+        SELECT
+        t.U_ID,
+        t.U_USERNAME,
+        '******' AS U_PASSWORD,
+        t.U_PHONE,
+        t.U_EMAIL,
+        t.U_STATUS,
+        t.U_TIME24
+        FROM t_USER_LIST t INNER JOIN t_USER_ROLE_RELATION x ON t.U_ID = x.U_ID
+        WHERE x.R_ID = #{id}
+        <if test="model.status != null and model.status != ''">
+            and t.U_STATUS = #{model.status}
+        </if>
+        <if test="model.username != null and model.username != ''">
+            and t.U_USERNAME like CONCAT('%',#{model.username},'%')
+        </if>
+    </select>
+
+    <select id="getPagedUnAllocatedList" resultMap="UserDetailMap" parameterType="AuthzRoleModel">
+        SELECT
+        t.U_ID,
+        t.U_USERNAME,
+        '******' AS U_PASSWORD,
+        t.U_PHONE,
+        t.U_EMAIL,
+        t.U_STATUS,
+        t.U_TIME24
+        FROM t_USER_LIST t
+        WHERE NOT EXISTS ( SELECT '1' FROM t_USER_ROLE_RELATION z WHERE t.U_ID = z.U_ID and z.R_ID = #{id} )
+        <if test="model.status != null and model.status != ''">
+            and t.U_STATUS = #{model.status}
+        </if>
+        <if test="model.username != null and model.username != ''">
+            and t.U_USERNAME like CONCAT('%',#{model.username},'%')
+        </if>
+    </select>
+
+</mapper>

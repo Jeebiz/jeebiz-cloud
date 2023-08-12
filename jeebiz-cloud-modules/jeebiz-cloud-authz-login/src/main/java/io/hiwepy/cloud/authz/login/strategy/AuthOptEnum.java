@@ -1,0 +1,70 @@
+/**
+ * Copyright (C) 2018 Hiwepy (http://hiwepy.io).
+ * All Rights Reserved.
+ */
+package io.hiwepy.cloud.authz.login.strategy;
+
+import java.util.*;
+
+public enum AuthOptEnum {
+
+    LOGIN("login", "登录认证"),
+    LOGOUT("logout", "会话注销");
+
+    private String key;
+    private String desc;
+
+    private AuthOptEnum(String key, String desc) {
+        this.key = key;
+        this.desc = desc;
+    }
+
+    public String getKey() {
+        return key;
+    }
+
+    public void setKey(String key) {
+        this.key = key;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public boolean equals(AuthOptEnum type) {
+        return this.compareTo(type) == 0;
+    }
+
+    public boolean equals(String key) {
+        return this.compareTo(AuthOptEnum.valueOfIgnoreCase(key)) == 0;
+    }
+
+    public static AuthOptEnum valueOfIgnoreCase(String key) {
+        for (AuthOptEnum optType : AuthOptEnum.values()) {
+            if (optType.getKey().equalsIgnoreCase(key)) {
+                return optType;
+            }
+        }
+        throw new NoSuchElementException("Cannot found AuthOptEnum with key '" + key + "'.");
+    }
+
+    public static List<Map<String, String>> toList() {
+        List<Map<String, String>> optList = new LinkedList<Map<String, String>>();
+        for (AuthOptEnum optEnum : AuthOptEnum.values()) {
+            optList.add(optEnum.toMap());
+        }
+        return optList;
+    }
+
+    public Map<String, String> toMap() {
+        Map<String, String> optMap = new HashMap<String, String>();
+        optMap.put("key", this.getKey());
+        optMap.put("desc", this.getDesc());
+        return optMap;
+    }
+
+}

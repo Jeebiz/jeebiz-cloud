@@ -1,0 +1,33 @@
+# 指定启用环境
+spring:
+  # 设置应用名称，根据应用实际情况替换
+  application:
+    name: wisdom-webflux-demo
+  main:
+    allow-bean-definition-overriding: true
+  cloud:
+    nacos:
+      # 设置nacos地址
+      server-addr: http://101.35.55.147:8848/nacos
+      # 配置中心设置
+      config:
+        file-extension: yaml
+        # 指定命名空间，默认为public
+        namespace: 35db1c7c-54eb-44b4-ac33-4306915dc1f2
+        #context-path: /nacos
+        #access-key: nacos
+        #secret-key: nacos
+        # 指定默认配置
+        extension-configs:
+          - dataId: wisdom-common.yaml
+            group: DEFAULT_GROUP
+            refresh: true
+      # 注册中心设置
+      discovery:
+        namespace: 35db1c7c-54eb-44b4-ac33-4306915dc1f2
+        metadata:
+          '[name]' : ${swagger.title}
+          '[detail]' : ${swagger.description}
+          '[version]' : ${swagger.version}
+#        access-key: nacos
+#        secret-key: nacos

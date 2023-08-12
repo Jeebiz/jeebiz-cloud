@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.message.core.dao.MessageTemplateMapper">
+
+    <resultMap id="InformTemplateMap" type="io.hiwepy.cloud.message.core.dao.entities.MessageTemplateEntity">
+        <!-- 消息通知模板id -->
+        <id property="id" column="id"/>
+        <!-- 消息通知模板名称 -->
+        <result property="name" column="name"/>
+        <!-- 消息通知模板类型 -->
+        <result property="channel" column="channel"/>
+        <!-- 通知信息标题（可能包含变量） -->
+        <result property="title" column="title"/>
+        <!-- 消息通知签名（短信消息模板需要使用） -->
+        <result property="signature" column="sign"/>
+        <!-- 通知信息内容（可能包含变量） -->
+        <result property="content" column="content"/>
+        <!-- 消息通知模板对应第三方平台内的模板id -->
+        <result property="templateId" column="template_id"/>
+        <!-- 消息通知模板变量载体,JOSN格式的数据 -->
+        <result property="payload" column="payload"/>
+        <!-- 消息通知模板状态：（0:停用、1:启用） -->
+        <result property="status" column="status"/>
+        <!-- 消息通知模板创建人id -->
+        <result property="userId" column="creator"/>
+        <!-- 消息通知模板创建人 -->
+        <result property="userName" column="t_uname"/>
+        <!-- 消息通知模板已发消息总数 -->
+        <result property="total" column="t_total"/>
+        <!-- 消息通知模板已发消息未读总数 -->
+        <result property="unread" column="t_total"/>
+        <!-- 消息通知模板创建时间 -->
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="InformTemplateStatsMap" type="io.hiwepy.cloud.message.core.web.dto.InformTemplateStatsDTO">
+        <!-- 消息通知模板类型 -->
+        <result property="channel" column="channel"/>
+        <!-- 消息通知模板已发消息总数 -->
+        <result property="total" column="t_total"/>
+        <!-- 消息通知模板已发消息未读总数 -->
+        <result property="unread" column="t_unread"/>
+    </resultMap>
+
+    <select id="getPagedList" resultMap="InformTemplateMap">
+        SELECT t.id,
+        t.name,
+        t.channel,
+        t.title,
+        t.sign,
+        t.content,
+        t.template_id,
+        t.payload,
+        t.status,
+        t.creator,
+        (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.creator) as t_uname,
+        IFNULL(( SELECT COUNT( x.id ) FROM t_message_records x WHERE x.template_id = t.id AND x.channel = t.channel),0)
+        AS t_total,
+        IFNULL(( SELECT count( x.id ) FROM t_message_records x WHERE x.template_id = t.id AND x.channel = t.channel AND
+        x.status = 0 ),0) AS t_unread,
+        t.create_time
+        FROM t_message_templates t
+        <where>
+            <if test="model.userId != null and model.userId != '' ">
+                AND t.creator = #{model.userId}
+            </if>
+            <if test="model.channel != null and model.channel != '' ">
+                AND t.channel = #{model.channel}
+            </if>
+            <if test="model.status != null and model.status != '' ">
+                AND t.status = #{model.status}
+            </if>
+            <if test="model.keywords != null and model.keywords != '' ">
+                AND t.title like '%'|| #{model.keywords} ||'%'
+            </if>
+        </where>
+        ORDER BY t.id DESC
+    </select>
+
+    <select id="getModel" resultMap="InformTemplateMap">
+        SELECT t.id,
+               t.name,
+               t.channel,
+               t.title,
+               t.sign,
+               t.content,
+               t.template_id,
+               t.payload,
+               t.status,
+               t.creator,
+               (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.creator)           as t_uname,
+               IFNULL((SELECT COUNT(x.id)
+                       FROM t_message_records x
+                       WHERE x.template_id = t.id AND x.channel = t.channel), 0)                  AS t_total,
+               IFNULL((SELECT count(x.id)
+                       FROM t_message_records x
+                       WHERE x.template_id = t.id AND x.channel = t.channel AND x.status = 0), 0) AS t_unread,
+               t.create_time
+        FROM t_message_templates t
+        WHERE t.id = #{id}
+    </select>
+
+    <select id="getStats" resultMap="InformTemplateStatsMap">
+        SELECT t.channel,
+               IFNULL((SELECT COUNT(x.id)
+                       FROM t_message_records x
+                       WHERE x.template_id = t.id AND x.channel = t.channel), 0)                  AS t_total,
+               IFNULL((SELECT count(x.id)
+                       FROM t_message_records x
+                       WHERE x.template_id = t.id AND x.channel = t.channel AND x.status = 0), 0) AS t_unread
+        FROM t_message_templates t
+        GROUP BY t.channel
+    </select>
+
+</mapper>

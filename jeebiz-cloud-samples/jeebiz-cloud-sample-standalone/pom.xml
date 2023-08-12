@@ -1,0 +1,536 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.hiwepy</groupId>
+        <artifactId>jeebiz-cloud-samples</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jeebiz-cloud-sample-standalone</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <dependencies>
+
+        <!-- Jeebiz API -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-feign-autoconfigure</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-webmvc-autoconfigure</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 数据权限（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-dbperms</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 功能菜单（必选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-feature</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 组织机构（必选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-feature</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 权限体系（必选） rbac0、rbac1、rbac2、rbac3、rbacx-->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-rbac0</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 认证授权（必选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-login</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 密码安全（必选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-passwd</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 人脸识别（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-facex</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-authz-facex-arcsoft</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- For ArcSoft Face-SDK -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>arcface-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.arcsoft.face</groupId>
+                    <artifactId>arcsoft-sdk-face</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.arcsoft.face</groupId>
+            <artifactId>arcsoft-sdk-face</artifactId>
+            <version>3.0.0.0</version>
+            <!-- <scope>system</scope>
+            <systemPath>${basedir}/libs/arcsoft-sdk-face-3.0.0.0.jar</systemPath> -->
+        </dependency>
+        <!-- Jeebiz 设备管理（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-device</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 数据字典（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-dict</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 安全加固（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-guard</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 安全审计：授权日志、操作日志（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-logs</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息流水（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-mqflow</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 定时任务（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-quartz</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 会话管理（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-sessions</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 任务管理（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-base-task</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（核心对象）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-core</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（钉钉）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-dingtalk</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（GoEasy）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-goeasy</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（极光）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-jpush</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（微信）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-weixin</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 消息通知（邮件）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-email</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（流水记录）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-core</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（核心对象）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-flow</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（阿里云）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-aliyun</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（FastDFS）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-fastdfs</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（Minio）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-minio</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（FTP 共享）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-sftp</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 文件存储（Samba 共享）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-oss-samba</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 短信发送（核心对象）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-sms-core</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 短信发送（流水记录）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-sms-flow</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 短信发送（阿里云）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-sms-aliyun</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+        <!-- Jeebiz 短信发送（腾讯云）（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-sms-txcloud</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+
+        <!-- For Dozer -->
+        <dependency>
+            <groupId>com.github.dozermapper</groupId>
+            <artifactId>dozer-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.springframework.boot</groupId>
+                    <artifactId>spring-boot-starter-logging</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>dozer-extra-converters</artifactId>
+        </dependency>
+        <!-- For Docx4j -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>docx4j-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Cache Support -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-cache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.ben-manes.caffeine</groupId>
+            <artifactId>caffeine</artifactId>
+        </dependency>
+        <!-- For Redis -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>redistpl-plus-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For IP2region -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>ip2region-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Okhttp 3.x -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>okhttp3-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>httpconn</artifactId>
+        </dependency>
+        <!-- For Log4j2 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>log4j2-plus-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>pac4j-yiban</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency> -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-freemarker</artifactId>
+        </dependency>
+        <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-thymeleaf</artifactId>
+        </dependency> -->
+        <!-- For Mybatis -->
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>mybatis-dbperms-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Druid -->
+        <dependency>
+            <groupId>com.alibaba</groupId>
+            <artifactId>druid-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>druid-plus-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Flyway -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>flyway-plus-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- JDBC Driver For MySQL -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <!-- JDBC Driver For Oracle -->
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.jdbc</groupId>
+            <artifactId>ojdbc8dms</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.oracle.database.nls</groupId>
+            <artifactId>orai18n</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+
+        <!-- For Zxing -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>zxing-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For XXL-JOB -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>xxljob-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Aliyun ONS -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>aliyun-ons-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For TenCent API -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>tencentapi-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For RocketMQ -->
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+            <exclusions>
+                <exclusion>
+                    <groupId>io.github.aliyunmq</groupId>
+                    <artifactId>rocketmq-logback-classic</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <!-- For Dubbo -->
+        <dependency>
+            <groupId>org.apache.dubbo</groupId>
+            <artifactId>dubbo-spring-boot-starter</artifactId>
+        </dependency>
+
+        <!--oauth2 server-->
+        <dependency>
+            <groupId>org.springframework.security.experimental</groupId>
+            <artifactId>spring-security-oauth2-authorization-server</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Security （微信公共号、小程序登录） -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>security-weixin-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.binarywang</groupId>
+            <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Security （钉钉） -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>dingtalk-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>security-dingtalk-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Security （扫码登录） -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>security-qrcode-spring-boot-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>zxing-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Security （Cas认证登录） -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>security-cas-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Security （第三方登录） -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>security-pac4j-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- PAC4J For CAS Protocol  -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-cas</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.codehaus.woodstox</groupId>
+            <artifactId>woodstox-core-asl</artifactId>
+        </dependency>
+        <!-- PAC4J For HTTP Protocol  -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-http</artifactId>
+        </dependency>
+        <!-- PAC4J For OAuth Protocol  -->
+        <dependency>
+            <groupId>org.pac4j</groupId>
+            <artifactId>pac4j-oauth</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.scribejava</groupId>
+            <artifactId>scribejava-apis</artifactId>
+        </dependency>
+
+        <!-- For Spring Cloud Nacos Config Client -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-config</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Nacos Config Enhancement With Nepxion Discovery -->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-config-center-starter-nacos</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Nacos Discovery Client -->
+        <dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
+        </dependency>
+        <!-- For Spring Cloud Nacos Discovery Enhancement With Nepxion Discovery -->
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-register-center-starter-nacos</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.nepxion</groupId>
+            <artifactId>discovery-plugin-strategy-starter-service</artifactId>
+        </dependency>
+
+        <!-- For Spring Cloud Alibaba Sentinel
+		<dependency>
+            <groupId>com.alibaba.cloud</groupId>
+            <artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
+		</dependency> -->
+
+        <!-- For Embed Tomcat -->
+        <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-tomcat</artifactId>
+        </dependency> -->
+        <!-- For Embed Jetty -->
+        <!-- <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-jetty</artifactId>
+        </dependency> -->
+        <!-- For Embed Undertow -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-undertow</artifactId>
+        </dependency>
+        <!-- For Devtools
+		<dependency>
+		   <groupId>org.springframework.boot</groupId>
+		   <artifactId>spring-boot-devtools</artifactId>
+		   <optional>true</optional>
+		</dependency> -->
+
+    </dependencies>
+
+    <build>
+        <finalName>${project.artifactId}</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.springframework.boot</groupId>
+                <artifactId>spring-boot-maven-plugin</artifactId>
+                <configuration>
+                    <fork>true</fork> <!-- 如果没有该配置，devtools不会生效 -->
+                    <executable>true</executable>
+                    <mainClass>io.hiwepy.cloud.sample.JeebizShadowApplication</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+</project>

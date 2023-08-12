@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.message.core.dao.MessageRecordMapper">
+
+    <resultMap id="InformRecordMap" type="io.hiwepy.cloud.message.core.dao.entities.MessageRecordEntity">
+        <!-- 消息通知记录id -->
+        <id property="id" column="id"/>
+        <!-- 消息通知记录来源类型：（EVENT:消息通知事件、SEND:用户主动发送） -->
+        <result property="fromType" column="from_type"/>
+        <!-- 消息通知发送人id/事件Id -->
+        <result property="fromId" column="from_id"/>
+        <!-- 消息通知发送人 -->
+        <result property="fromUname" column="from_uname"/>
+        <!-- 消息通知发送通道 -->
+        <result property="channel" column="channel"/>
+        <!-- 消息通知标题（变量处理后的标题） -->
+        <result property="title" column="title"/>
+        <!-- 消息通知内容（变量处理后的内容） -->
+        <result property="content" column="content"/>
+        <!-- 消息通知对应平台内的模板id -->
+        <result property="templateId" column="template_id"/>
+        <!-- 消息通知变量载体,JOSN格式的数据 -->
+        <result property="payload" column="payload"/>
+        <!-- 消息通知接收人id -->
+        <result property="receiverId" column="receiver_id"/>
+        <!-- 消息通知接收人 -->
+        <result property="receiverUname" column="receiver_uname"/>
+        <!-- 消息通知处理流水编号 -->
+        <result property="flowNo" column="flow_no"/>
+        <!-- 消息通知关联业务id -->
+        <result property="bizId" column="biz_id"/>
+        <!-- 消息通知阅读状态：（0:未阅读、1:已阅读） -->
+        <result property="status" column="status"/>
+        <!-- 消息通知创建时间 -->
+        <result property="appId" column="app_id"/>
+        <!-- 消息通知创建时间 -->
+        <result property="appChannel" column="app_channel"/>
+        <!-- 消息通知创建时间 -->
+        <result property="appVer" column="app_version"/>
+        <!-- 消息通知内容中包含的路由跳转信息（JSON格式：[{"name":"路由名称","word":"路由文字","link":"路由跳转地址"}]） -->
+        <result property="route" column="route"/>
+        <!-- 消息通知创建时间 -->
+        <result property="time24" column="create_time"/>
+    </resultMap>
+
+    <resultMap id="InformRecordStatsMap" type="io.hiwepy.cloud.message.core.web.dto.InformRecordStatsDTO">
+        <!-- 消息通知发送通道 -->
+        <result property="channel" column="channel"/>
+        <!-- 该类型通知总数 -->
+        <result property="total" column="t_total"/>
+        <!-- 该类型未读通知总数 -->
+        <result property="unread" column="t_unread"/>
+    </resultMap>
+
+    <select id="getPagedList" resultMap="InformRecordMap">
+        SELECT t.id,
+        t.from_type,
+        t.from_id,
+        (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.from_id) as from_uname,
+        t.channel,
+        t.title,
+        t.content,
+        t.template_id,
+        t.payload,
+        t.receiver_id,
+        (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.receiver_id) as receiver_uname,
+        t.flow_no,
+        t.biz_id,
+        t.app_id,
+        t.app_channel,
+        t.app_version,
+        t.route,
+        t.status,
+        t.create_time
+        FROM t_message_records t
+        <where>
+            <if test="model.receiverId != null and model.receiverId != '' ">
+                AND t.receiver_id = #{model.receiverId}
+            </if>
+            <if test="model.fromType != null">
+                AND t.from_type = #{model.fromType}
+            </if>
+            <if test="model.channel != null">
+                AND t.channel = #{model.channel}
+            </if>
+            <if test="model.status != null and model.status != '' ">
+                AND t.status = #{model.status}
+            </if>
+            <if test="model.keywords != null and model.keywords != '' ">
+                AND t.title like CONCAT('%',#{model.keywords},'%')
+            </if>
+        </where>
+        ORDER BY t.id DESC
+    </select>
+
+    <select id="getModel" resultMap="InformRecordMap">
+        SELECT t.id,
+               t.from_type,
+               t.from_id,
+               (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.from_id)     as from_uname,
+               t.channel,
+               t.title,
+               t.content,
+               t.template_id,
+               t.payload,
+               t.receiver_id,
+               (SELECT x.nickname FROM t_user_profile x WHERE x.id = t.receiver_id) as receiver_uname,
+               t.flow_no,
+               t.biz_id,
+               t.app_id,
+               t.app_channel,
+               t.app_version,
+               t.route,
+               t.status,
+               t.create_time
+        FROM t_message_records t
+        WHERE t.id = #{id}
+    </select>
+
+    <select id="getStats" resultMap="InformRecordStatsMap">
+        SELECT t.channel,
+               COUNT(t.id)                                     as t_total,
+               SUM(CASE WHEN t.status = '0' THEN 1 ELSE 0 END) as t_unread
+        FROM t_message_records t
+        WHERE t.receiver_id = #{userId}
+        GROUP BY t.channel
+    </select>
+
+</mapper>

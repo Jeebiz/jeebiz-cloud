@@ -1,0 +1,44 @@
+package io.hiwepy.cloud.base.dict.setup.event.listener;
+
+import io.hiwepy.boot.api.dao.entities.PairModel;
+import io.hiwepy.cloud.base.dict.dao.DictPairMapper;
+import io.hiwepy.cloud.base.dict.setup.event.DictPairDeletedEvent;
+import io.hiwepy.cloud.base.redis.BizRedisKey;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationListener;
+import org.springframework.data.redis.core.RedisOperationTemplate;
+import org.springframework.stereotype.Component;
+
+import java.util.List;
+
+@Component
+public class DictPairDeletedEventListener implements ApplicationListener<DictPairDeletedEvent> {
+
+    @Autowired
+    private DictPairMapper keyValueMapper;
+    @Autowired
+    private RedisOperationTemplate redisOperation;
+
+    @Override
+    public void onApplicationEvent(DictPairDeletedEvent event) {
+
+        // 清理Redis缓存
+        String dictRedisKey = BizRedisKey.APP_DICT.getKey(event.getKey());
+        getRedisOperation().del(dictRedisKey);
+        try {
+            List<PairModel> retList = getKeyValueMapper().getPairValues(event.getKey());
+            getRedisOperation().lLeftPush(dictRedisKey, retList);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    public DictPairMapper getKeyValueMapper() {
+        return keyValueMapper;
+    }
+
+    public RedisOperationTemplate getRedisOperation() {
+        return redisOperation;
+    }
+
+}

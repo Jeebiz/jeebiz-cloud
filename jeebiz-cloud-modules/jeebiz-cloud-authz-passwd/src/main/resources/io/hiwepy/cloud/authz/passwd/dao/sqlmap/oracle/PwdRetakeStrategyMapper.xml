@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.passwd.dao.IPwdRetakeStrategyDao">
+
+    <resultMap id="PwdRetakeStrategyMap" type="PwdRetakeStrategyModel">
+        <id property="id" column="S_ID"/>
+        <result property="key" column="S_KEY"/>
+        <result property="name" column="S_NAME"/>
+        <result property="desc" column="S_DESC"/>
+        <result property="status" column="S_STATUS"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="PwdRetakeStrategyModel">
+        INSERT INTO SYS_PASSWD_STRATEGY(S_KEY, S_NAME, S_DESC, S_STATUS)
+        VALUES (#{key}, #{name}, #{desc}, '1')
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE
+        FROM SYS_PASSWD_STRATEGY t WHERE　t.S_ID =　#{id}
+    </delete>
+
+    <update id="setStatus" parameterType="java.lang.String">
+        UPDATE SYS_PASSWD_STRATEGY t
+        SET t.S_STATUS = #{status}
+        WHERE t.S_ID = #{id}
+    </update>
+
+    <select id="getModel" parameterType="java.lang.String" resultMap="PwdRetakeStrategyMap">
+        SELECT t.S_ID, t.S_KEY, t.S_NAME, t.S_DESC, t.S_STATUS
+        FROM SYS_PASSWD_STRATEGY t
+        WHERE t.S_ID = #{id}
+    </select>
+
+    <select id="getStrategyList" resultMap="PwdRetakeStrategyMap">
+        SELECT t.S_ID, t.S_KEY, t.S_NAME, t.S_DESC, t.S_STATUS
+        FROM SYS_PASSWD_STRATEGY t
+        WHERE t.S_STATUS = 1
+        ORDER BY t.S_NAME
+    </select>
+
+</mapper>

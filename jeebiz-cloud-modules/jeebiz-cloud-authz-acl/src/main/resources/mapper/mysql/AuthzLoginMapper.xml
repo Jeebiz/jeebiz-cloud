@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.boot.authz.rbac0.dao.IAuthzLoginDao">
+
+    <resultMap id="LoginMap" type="AuthzLoginModel">
+        <result property="id" column="U_ID"/>
+        <result property="username" column="U_USERNAME"/>
+        <result property="password" column="U_PASSWORD"/>
+        <result property="phone" column="U_PHONE"/>
+        <result property="email" column="U_EMAIL"/>
+        <result property="status" column="U_STATUS"/>
+        <result property="time24" column="U_TIME24"/>
+    </resultMap>
+
+    <sql id="AccountSQL">
+        select t.U_ID,
+               t.U_USERNAME,
+               t.U_PHONE,
+               t.U_EMAIL,
+               nvl(t.U_STATUS, '0') U_STATUS
+        from t_USER_LIST t
+        where t.U_USERNAME = #{username}
+    </sql>
+
+    <!-- 根据用户ID和密码查询用户信息  -->
+    <select id="getAccount" parameterType="java.lang.String" resultMap="LoginMap">
+        <include refid="AccountSQL"/>
+        and t.U_PASSWORD = #{password}
+    </select>
+
+    <!-- 无密码根据用户ID用户信息  -->
+    <select id="getAccountWithoutPwd" parameterType="java.lang.String" resultMap="LoginMap">
+        <include refid="AccountSQL"/>
+    </select>
+
+    <!-- 根据用户ID和密码查询用户可否登录，角色数量等信息  -->
+    <select id="getAccountStatus" parameterType="java.lang.String" resultType="hashmap">
+        select (select to_char(count('1')) from t_USER_LIST a where a.U_USERNAME = #{username}) num_1,
+               (select to_char(count('1'))
+                from t_USER_LIST b
+                where b.U_USERNAME = #{username}
+                  and b.U_PASSWORD = #{password,jdbcType=VARCHAR})                                      num_2,
+               (select to_char(count('1'))
+                from t_USER_LIST c,
+                     SYS_ROLE_USER_RELATION x
+                where c.U_ID = x.U_ID
+                  and c.U_USERNAME = #{username})                                                       num_3,
+               nvl((select to_char(nvl(d.yhzt, '0')) from t_USER_LIST d where d.U_USERNAME = #{username}),
+                   '0')                                                                                 num_4
+        from dual
+    </select>
+
+</mapper>

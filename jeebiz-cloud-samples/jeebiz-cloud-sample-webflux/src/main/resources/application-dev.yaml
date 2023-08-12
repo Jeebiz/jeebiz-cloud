@@ -1,0 +1,61 @@
+################################################################################################################
+###Spring Boot 相关组件（SpringMVC、Freemarker、Session、Cache、DataSource）配置：
+################################################################################################################
+spring:
+  # 数据源配置：
+  datasource:
+    dynamic:
+      primary: master #设置默认的数据源或者数据源组,默认值即为master
+      strict: false #严格匹配数据源,默认false. true未匹配到指定数据源时抛异常,false使用默认数据源
+      datasource:
+        master:
+          url: jdbc:mysql://106.54.2.213:3306/wisdom_edu_logs?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+          username: wisdom_edu_logs
+          password: Z342wSMrmMhcAPt3
+          driver-class-name: com.mysql.jdbc.Driver
+        slave:
+          url: jdbc:mysql://106.54.2.213:3306/wisdom_edu_logs?zeroDateTimeBehavior=convertToNull&useUnicode=true&characterEncoding=UTF-8&allowMultiQueries=true&serverTimezone=GMT%2B8&nullCatalogMeansCurrent=true
+          username: wisdom_edu_logs
+          password: Z342wSMrmMhcAPt3
+          driver-class-name: com.mysql.jdbc.Driver
+          hikari:
+            # 连接有效测试SQL
+            connection-test-query: select 1 from dual
+            # 一个连接的最大的生命时间（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒以上，参考MySQL wait_timeout参数（show variables like '%timeout%';）
+            max-lifetime: 1800000
+            # 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+            max-pool-size: 30
+            # 最小闲置线程
+            min-idle: 5
+      # HiKariCP连接池配置：
+      hikari:
+        connection-test-query: select 1 from dual
+        # 一个连接的最大的生命时间（毫秒），超时而且没被使用则被释放（retired），缺省:30分钟，建议设置比数据库超时时长少30秒以上，参考MySQL wait_timeout参数（show variables like '%timeout%';）
+        max-lifetime: 1800000
+        # 连接池中允许的最大连接数。缺省值：10；推荐的公式：((core_count * 2) + effective_spindle_count)
+        max-pool-size: 15
+        # 最小闲置线程
+        min-idle: 5
+  # Redis相关配置
+  redis:
+    # Redis服务器地址
+    host: 106.54.2.213
+    # Redis服务器连接端口
+    port: 6379
+    # Database 索引；和其他服务区别开
+    #database: 1
+    # Redis服务器连接密码（默认为空）
+    password: HycBsP5cSp3enyGw
+  ################################################################################################################
+  ###Flyway (FlywayMigrationProperties) 数据库迁移脚本版本管理（实现软件版本升级数据库自动升级）配置：
+  ################################################################################################################
+  flyway:
+    enabled: false
+    moduleable: true
+
+################################################################################################################
+###logging (log4j2) 基本配置：
+###http://www.cnblogs.com/yhtboke/p/Mybatis.html
+################################################################################################################
+logging:
+  config: classpath:conf/log4j2-dev.xml

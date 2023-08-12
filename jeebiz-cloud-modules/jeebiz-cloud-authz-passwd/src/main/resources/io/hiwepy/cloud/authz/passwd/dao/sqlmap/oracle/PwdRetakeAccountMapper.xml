@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.passwd.dao.IPwdRetakeAccountDao">
+
+    <!-- 根据用户ID和密码查询用户可否登录，角色数量等信息  -->
+    <select id="getCountByUid" parameterType="java.lang.String" resultType="hashmap">
+        select COUNT(1)
+        from t_USER_LIST t
+        where t.U_USERNAME = #{username}
+          AND ROWNUM = 1
+    </select>
+
+    <select id="getAccount" parameterType="map" resultType="BaseMap">
+        <!-- 管理账号 -->
+        <if test="usertype == 1 ">
+            SELECT * FROM GXJG_JZGXXB t WHERE t.GH = #{username}
+        </if>
+        <!-- 学生账号 -->
+        <if test="usertype == 0 ">
+            SELECT * FROM GXXS_XSXXB t WHERE t.XH = #{username}
+        </if>
+    </select>
+
+    <!-- 修改用户密码 -->
+    <update id="resetPwd" parameterType="BaseMap">
+        UPDATE t_USER_LIST t
+        SET t.U_PASSWORD = #{newpassword}
+        where t.U_USERNAME = #{username}
+    </update>
+
+</mapper>

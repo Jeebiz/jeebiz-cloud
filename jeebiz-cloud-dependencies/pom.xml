@@ -1,0 +1,649 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.hiwepy</groupId>
+        <artifactId>jeebiz-cloud</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jeebiz-cloud-dependencies</artifactId>
+    <packaging>pom</packaging>
+
+    <properties>
+
+        <feign-form.version>3.8.0</feign-form.version>
+        <feign-okhttp.version>11.3</feign-okhttp.version>
+
+        <kubernetes-client.version>4.13.0</kubernetes-client.version>
+        <jaeger-client>1.6.0</jaeger-client>
+        <istio-client.version>1.6.14</istio-client.version>
+
+        <!-- Third Party Spring Cloud Starter Dependency versions -->
+        <spring-cloud-alibaba.version>2.2.9.RELEASE</spring-cloud-alibaba.version>
+        <spring-cloud-deployer.version>2.7.1</spring-cloud-deployer.version>
+        <spring-cloud-dromara-soul.version>2.2.1</spring-cloud-dromara-soul.version>
+        <spring-cloud-nepxion.version>6.12.1</spring-cloud-nepxion.version>
+        <spring-cloud-opentracing.version>0.5.9</spring-cloud-opentracing.version>
+        <spring-cloud-swagger2.version>1.0.3.RELEASE</spring-cloud-swagger2.version>
+        <spring-cloud-camel.version>3.11.6</spring-cloud-camel.version>
+
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+
+            <!-- https://mvnrepository.com/artifact/org.dromara/soul-spring-boot-starter -->
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>soul-spring-boot-starter</artifactId>
+                <version>${spring-cloud-dromara-soul.version}</version>
+            </dependency>
+
+            <!-- https://github.com/Nepxion/Discovery -->
+            <!-- https://mvnrepository.com/artifact/com.nepxion/discovery -->
+            <!-- 服务注册发现中间件的四个插件，必须引入其中一个 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-register-center-starter-nacos</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-register-center-starter-eureka</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-register-center-starter-consul</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-register-center-starter-zookeeper</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- 配置中心中间件的六个插件，选择引入其中一个 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-apollo</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-nacos</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-redis</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-zookeeper</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-consul</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-config-center-starter-etcd</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- 管理中心依赖 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-admin-center-starter</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!--
+                路由策略：
+                微服务端、网关Zuul端和网关Spring Cloud Gateway端三个路由策略插件，选择引入其中一个
+            -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-service</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-zuul</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-gateway</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- 防护插件：	-->
+            <!-- Sentinel防护插件。只适用于微服务端 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-datasource</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-limiter</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-monitor</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-micrometer</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- Hystrix防护插件。Hystrix线程池隔离模式下必须引入该插件 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-hystrix</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- 控制台: -->
+            <!-- 控制台对于配置中心中间件的四个插件，选择引入其中一个 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-apollo</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-nacos</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-redis</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-zookeeper</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-consul</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-console-starter-etcd</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <!-- 调用链插件: -->
+            <!-- 支持微服务端、网关Zuul端和网关Spring Cloud Gateway端，选择引入其中一个 -->
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-opentelemetry</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-opentracing</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.nepxion</groupId>
+                <artifactId>discovery-plugin-strategy-starter-sentinel-skywalking</artifactId>
+                <version>${spring-cloud-nepxion.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/cn.springcloud.dubbo/spring-cloud-dubbo-starter -->
+            <dependency>
+                <groupId>cn.springcloud.dubbo</groupId>
+                <artifactId>spring-cloud-dubbo-starter</artifactId>
+                <version>${spring-cloud-dubbo.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-deployer-dependencies -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-deployer-dependencies</artifactId>
+                <version>${spring-cloud-deployer.version}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-deployer-local -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-deployer-local</artifactId>
+                <version>${spring-cloud-deployer.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-deployer-cloudfoundry -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-deployer-cloudfoundry</artifactId>
+                <version>${spring-cloud-deployer.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-deployer-resource-docker -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-deployer-resource-docker</artifactId>
+                <version>${spring-cloud-deployer.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.springframework.cloud/spring-cloud-deployer-kubernetes -->
+            <dependency>
+                <groupId>org.springframework.cloud</groupId>
+                <artifactId>spring-cloud-deployer-kubernetes</artifactId>
+                <version>${spring-cloud-deployer.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-mongo-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-mongo-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-feign-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-feign-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-gateway-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-gateway-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-hystrix-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-hystrix-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-jdbc-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-jdbc-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-jms-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-jms-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-kafka-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-kafka-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-reactor-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-reactor-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-redis-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-redis-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-rxjava-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-rxjava-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-websocket-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-websocket-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.opentracing.contrib/opentracing-spring-cloud-zuul-starter -->
+            <dependency>
+                <groupId>io.opentracing.contrib</groupId>
+                <artifactId>opentracing-spring-cloud-zuul-starter</artifactId>
+                <version>${spring-cloud-opentracing.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.github.openfeign.form/feign-form -->
+            <dependency>
+                <groupId>io.github.openfeign.form</groupId>
+                <artifactId>feign-form</artifactId>
+                <version>${feign-form.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/io.github.openfeign.form/feign-form-spring -->
+            <dependency>
+                <groupId>io.github.openfeign.form</groupId>
+                <artifactId>feign-form-spring</artifactId>
+                <version>${feign-form.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.github.openfeign/feign-okhttp -->
+            <dependency>
+                <groupId>io.github.openfeign</groupId>
+                <artifactId>feign-okhttp</artifactId>
+                <version>${feign-okhttp.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/io.jaegertracing/jaeger-client -->
+            <dependency>
+                <groupId>io.jaegertracing</groupId>
+                <artifactId>jaeger-client</artifactId>
+                <version>${jaeger-client.version}</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/org.springframework.security.experimental/spring-security-oauth2-authorization-server -->
+            <dependency>
+                <groupId>org.springframework.security.experimental</groupId>
+                <artifactId>spring-security-oauth2-authorization-server</artifactId>
+                <version>0.1.2</version>
+            </dependency>
+
+            <!-- https://mvnrepository.com/artifact/com.alibaba.cloud/spring-cloud-alibaba-dependencies -->
+            <dependency>
+                <groupId>com.alibaba.cloud</groupId>
+                <artifactId>spring-cloud-alibaba-dependencies</artifactId>
+                <version>${spring-cloud-alibaba.version}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/com.github.hiwepy/spring-cloud-gateway-swagger2 -->
+            <dependency>
+                <groupId>com.github.hiwepy</groupId>
+                <artifactId>spring-cloud-gateway-swagger2</artifactId>
+                <version>${spring-cloud-swagger2.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.camel.springboot/camel-spring-cloud-netflix-starter -->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-cloud-netflix-starter</artifactId>
+                <version>${spring-cloud-camel.version}</version>
+            </dependency>
+            <!-- https://mvnrepository.com/artifact/org.apache.camel.springboot/camel-spring-cloud-consul-starter -->
+            <dependency>
+                <groupId>org.apache.camel.springboot</groupId>
+                <artifactId>camel-spring-cloud-consul-starter</artifactId>
+                <version>${spring-cloud-camel.version}</version>
+            </dependency>
+
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <!-- http://www.mojohaus.org/appassembler/appassembler-maven-plugin，http://blog.csdn.net/mn960mn/article/details/51554152 -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>appassembler-maven-plugin</artifactId>
+                    <version>${maven-appassembler-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-assembly-plugin -->
+                <!-- http://maven.apache.org/plugins/maven-assembly-plugin/ -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-assembly-plugin</artifactId>
+                    <version>${maven-assembly-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.asciidoctor/asciidoctor-maven-plugin -->
+                <plugin>
+                    <groupId>org.asciidoctor</groupId>
+                    <artifactId>asciidoctor-maven-plugin</artifactId>
+                    <version>${maven-asciidoctor-plugin.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-codegen-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-codegen-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-java2ws-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-java2ws-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-java2swagger-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-java2swagger-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-xml2fastinfoset-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-xml2fastinfoset-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-xjc-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-xjc-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-wsdl-validator-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-wsdl-validator-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.apache.cxf/cxf-corbatools-maven-plugin -->
+                <plugin>
+                    <groupId>org.apache.cxf</groupId>
+                    <artifactId>cxf-corbatools-maven-plugin</artifactId>
+                    <version>${cxf.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-checkstyle-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-checkstyle-plugin</artifactId>
+                    <version>${maven-checkstyle-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.owasp/dependency-check-maven -->
+                <plugin>
+                    <groupId>org.owasp</groupId>
+                    <artifactId>dependency-check-maven</artifactId>
+                    <version>${maven-dependency-check-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/clirr-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>clirr-maven-plugin</artifactId>
+                    <version>${maven-clirr-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/codenarc-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>codenarc-maven-plugin</artifactId>
+                    <version>${maven-codenarc-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/cobertura-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>${maven-cobertura-plugin.version}</version>
+                </plugin>
+                <!-- https://github.com/spotify/docker-maven-plugin,http://blog.csdn.net/qq_22841811/article/details/67369530 -->
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${maven-docker-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/com.spotify/dockerfile-maven-plugin -->
+                <plugin>
+                    <groupId>com.spotify</groupId>
+                    <artifactId>dockerfile-maven-plugin</artifactId>
+                    <version>${maven-dockerfile-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/io.fabric8/docker-maven-plugin -->
+                <!-- http://dmp.fabric8.io -->
+                <plugin>
+                    <groupId>io.fabric8</groupId>
+                    <artifactId>docker-maven-plugin</artifactId>
+                    <version>${maven-docker-fabric8-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/findbugs-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>findbugs-maven-plugin</artifactId>
+                    <version>${maven-findbugs-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-gpg-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-gpg-plugin</artifactId>
+                    <version>${maven-gpg-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/gwt-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>gwt-maven-plugin</artifactId>
+                    <version>${maven-gwt-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-jarsigner-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jarsigner-plugin</artifactId>
+                    <version>${maven-jarsigner-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/jaxb2-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jaxb2-maven-plugin</artifactId>
+                    <version>${maven-jaxb2-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/javancss-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>javancss-maven-plugin</artifactId>
+                    <version>${maven-javancss-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/jdepend-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>jdepend-maven-plugin</artifactId>
+                    <version>${maven-jdepend-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.eclipse.jetty/jetty-maven-plugin -->
+                <plugin>
+                    <groupId>org.eclipse.jetty</groupId>
+                    <artifactId>jetty-maven-plugin</artifactId>
+                    <version>${maven-jetty-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/license-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>license-maven-plugin</artifactId>
+                    <version>${maven-license-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.liquibase/liquibase-maven-plugin -->
+                <plugin>
+                    <groupId>org.liquibase</groupId>
+                    <artifactId>liquibase-maven-plugin</artifactId>
+                    <version>${liquibase.version}</version>
+                </plugin>
+                <!-- http://mvnrepository.com/artifact/org.mybatis.generator/mybatis-generator-maven-plugin -->
+                <plugin>
+                    <groupId>org.mybatis.generator</groupId>
+                    <artifactId>mybatis-generator-maven-plugin</artifactId>
+                    <version>${maven-mybatis-generator-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/native2ascii-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>native2ascii-maven-plugin</artifactId>
+                    <version>${maven-native2ascii-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-m2settings-maven-plugin -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-m2settings-maven-plugin</artifactId>
+                    <version>${maven-nexus-m2settings-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/nexus-staging-maven-plugin -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>nexus-staging-maven-plugin</artifactId>
+                    <version>${maven-nexus-staging-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.sonatype.plugins/yuicompressor-maven-plugin -->
+                <plugin>
+                    <groupId>org.sonatype.plugins</groupId>
+                    <artifactId>yuicompressor-maven-plugin</artifactId>
+                    <version>${maven-nexus-yuicompressor-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.jasig.maven/maven-notice-plugin -->
+                <plugin>
+                    <groupId>org.jasig.maven</groupId>
+                    <artifactId>maven-notice-plugin</artifactId>
+                    <version>${maven-notice-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-pmd-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-pmd-plugin</artifactId>
+                    <version>${maven-pmd-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/properties-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>properties-maven-plugin</artifactId>
+                    <version>${maven-properties-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.codehaus.mojo/rpm-maven-plugin -->
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>rpm-maven-plugin</artifactId>
+                    <version>${maven-rpm-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-shade-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-shade-plugin</artifactId>
+                    <version>${maven-shade-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/io.swagger.core.v3/swagger-maven-plugin -->
+                <plugin>
+                    <groupId>io.swagger.core.v3</groupId>
+                    <artifactId>swagger-maven-plugin</artifactId>
+                    <version>${maven-swagger3-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/io.swagger/swagger-codegen-maven-plugin -->
+                <plugin>
+                    <groupId>io.swagger</groupId>
+                    <artifactId>swagger-codegen-maven-plugin</artifactId>
+                    <version>${maven-swagger-codegen-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/io.github.swagger2markup/swagger2markup-maven-plugin -->
+                <plugin>
+                    <groupId>io.github.swagger2markup</groupId>
+                    <artifactId>swagger2markup-maven-plugin</artifactId>
+                    <version>${maven-swagger2markup-plugin.version}</version>
+                </plugin>
+                <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-war-plugin -->
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>${maven-war-plugin.version}</version>
+                    <configuration>
+                        <failOnMissingWebXml>false</failOnMissingWebXml>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

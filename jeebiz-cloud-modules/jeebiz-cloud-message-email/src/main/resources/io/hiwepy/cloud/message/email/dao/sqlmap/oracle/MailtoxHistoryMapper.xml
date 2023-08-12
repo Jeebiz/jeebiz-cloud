@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.message.email.dao.IMailtoxHistoryDao">
+
+    <resultMap id="MailtoxHistoryMap" type="MailtoxHistoryModel">
+        <result property="id" column="MAIL_ID"/>
+        <result property="uid" column="MAIL_UID"/>
+        <result property="addr" column="MAIL_ADDR"/>
+        <result property="priority" column="MAIL_PRIORITY"/>
+        <result property="subject" column="MAIL_SUBJECT"/>
+        <result property="html" column="MAIL_HTML"/>
+        <result property="content" column="MAIL_CONTENT"/>
+        <result property="from" column="MAIL_FROM"/>
+        <result property="mailto" column="MAIL_TO"/>
+        <result property="mailcc" column="MAIL_CC"/>
+        <result property="mailBcc" column="MAIL_BCC"/>
+        <result property="time24" column="TIME24"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="MailtoxHistoryModel" flushCache="true">
+        insert into SYS_DATA_MAILTOX_HISTORY(MAIL_UID, MAIL_ADDR, MAIL_PRIORITY, MAIL_SUBJECT, MAIL_HTML, MAIL_CONTENT,
+                                             MAIL_FROM, MAIL_TO, MAIL_CC, MAIL_BCC)
+        values (#{uid}, #{addr}, #{priority}, #{subject}, #{html}, #{content,jdbcType=CLOB}, #{from}, #{mailto},
+                #{mailcc,jdbcType=VARCHAR}, #{mailBcc,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="batchDelete" flushCache="true">
+        DELETE FROM SYS_DATA_MAILTOX_HISTORY WHERE MAIL_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+
+    <select id="getPagedList" resultMap="MailtoxHistoryMap" parameterType="MailtoxHistoryModel">
+        SELECT
+        t.MAIL_ID,
+        t.MAIL_UID,
+        t.MAIL_ADDR,
+        t.MAIL_PRIORITY,
+        t.MAIL_SUBJECT,
+        t.MAIL_HTML,
+        t.MAIL_FROM,
+        t.MAIL_CONTENT,
+        t.MAIL_TO,
+        t.MAIL_CC,
+        t.MAIL_BCC,
+        t.TIME24
+        FROM
+        SYS_DATA_MAILTOX_HISTORY t
+        <where>
+            <if test="model.userId != null and model.userId != '' ">
+                and t.MAIL_UID = #{model.userId}
+            </if>
+            <if test="model.opt != null and model.opt != '' ">
+                and t.MAIL_PRIORITY = #{model.opt}
+            </if>
+            <if test="model.html != null and model.html != '' ">
+                and t.MAIL_HTML = #{model.html}
+            </if>
+            <if test="model.addr != null and model.addr != '' ">
+                and t.MAIL_ADDR like '%'||#{model.addr}||'%'
+            </if>
+            ORDER BY t.TIME24 DESC
+        </where>
+    </select>
+
+    <select id="getModel" resultMap="MailtoxHistoryMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.MAIL_ID,
+               t.MAIL_UID,
+               t.MAIL_ADDR,
+               t.MAIL_PRIORITY,
+               t.MAIL_SUBJECT,
+               t.MAIL_HTML,
+               t.MAIL_FROM,
+               t.MAIL_CONTENT,
+               t.MAIL_TO,
+               t.MAIL_CC,
+               t.MAIL_BCC,
+               t.TIME24
+        FROM SYS_DATA_MAILTOX_HISTORY t
+        WHERE t.MAIL_ID = #{id}
+    </select>
+
+</mapper>
