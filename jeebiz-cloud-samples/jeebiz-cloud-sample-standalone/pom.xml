@@ -354,13 +354,6 @@
             <artifactId>orai18n</artifactId>
             <scope>runtime</scope>
         </dependency>
-
-
-        <!-- For Zxing -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>zxing-spring-boot-starter</artifactId>
-        </dependency>
         <!-- For XXL-JOB -->
         <dependency>
             <groupId>com.github.hiwepy</groupId>
@@ -397,70 +390,6 @@
         <dependency>
             <groupId>org.springframework.security.experimental</groupId>
             <artifactId>spring-security-oauth2-authorization-server</artifactId>
-        </dependency>
-        <!-- For Spring Cloud Security （微信公共号、小程序登录） -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>security-weixin-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.binarywang</groupId>
-            <artifactId>wx-java-miniapp-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- For Spring Cloud Security （钉钉） -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>dingtalk-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>security-dingtalk-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- For Spring Cloud Security （扫码登录） -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>security-qrcode-spring-boot-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>zxing-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- For Spring Cloud Security （Cas认证登录） -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>security-cas-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- For Spring Cloud Security （第三方登录） -->
-        <dependency>
-            <groupId>com.github.hiwepy</groupId>
-            <artifactId>security-pac4j-spring-boot-starter</artifactId>
-        </dependency>
-        <!-- PAC4J For CAS Protocol  -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-cas</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.codehaus.woodstox</groupId>
-            <artifactId>woodstox-core-asl</artifactId>
-        </dependency>
-        <!-- PAC4J For HTTP Protocol  -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-http</artifactId>
-        </dependency>
-        <!-- PAC4J For OAuth Protocol  -->
-        <dependency>
-            <groupId>org.pac4j</groupId>
-            <artifactId>pac4j-oauth</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.scribejava</groupId>
-            <artifactId>scribejava-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.github.scribejava</groupId>
-            <artifactId>scribejava-apis</artifactId>
         </dependency>
 
         <!-- For Spring Cloud Nacos Config Client -->

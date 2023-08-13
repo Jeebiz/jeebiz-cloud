@@ -136,11 +136,11 @@
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-nacos-discovery</artifactId>
 		</dependency>
-		<!-- For Spring Cloud Alibaba Sentinel -->
+		<!-- For Spring Cloud Alibaba Sentinel
 		<dependency>
 			<groupId>com.alibaba.cloud</groupId>
 			<artifactId>spring-cloud-starter-alibaba-sentinel</artifactId>
-		</dependency>
+		</dependency> -->
 
 		<!-- For Embed Tomcat -->
 		<!-- <dependency>
