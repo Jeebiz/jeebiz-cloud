@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.org.dao.AuthzDepartmentMapper">
+
+    <resultMap id="AuthzDepartmentMap" type="AuthzDepartmentEntity">
+        <id property="id" column="dept_id"/>
+        <result property="orgId" column="org_id"/>
+        <result property="orgName" column="org_name"/>
+        <result property="code" column="dept_code"/>
+        <result property="name" column="dept_name"/>
+        <result property="intro" column="dept_intro"/>
+        <result property="parent" column="dept_parent"/>
+        <result property="uid" column="dept_uid"/>
+        <result property="status" column="dept_status"/>
+        <result property="time24" column="time24"/>
+    </resultMap>
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="dept_id"/>
+        <result property="value" column="dept_name"/>
+    </resultMap>
+
+    <update id="setStatus" parameterType="java.lang.String" flushCache="true">
+        UPDATE t_org_dept t
+        SET dept_status = #{status}
+        WHERE dept_id = #{id}
+    </update>
+
+    <select id="getCountByParent" resultType="java.lang.Long" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.dept_id)
+        FROM t_org_dept t
+        WHERE t.dept_parent = #{parent}
+    </select>
+
+    <select id="getStaffCount" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.staff_id)
+        FROM t_org_staff t
+        WHERE t.dept_id = #{id}
+    </select>
+
+    <select id="getDeptCountByCode" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.dept_id)
+        FROM t_org_dept t
+        WHERE t.dept_code = #{code}
+        AND t.org_id = #{orgId}
+        <if test="deptId != null and deptId != ''">
+            AND t.dept_id != #{deptId}
+        </if>
+    </select>
+
+    <select id="getDeptCountByName" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.dept_id)
+        FROM t_org_dept t
+        WHERE t.dept_name = #{name}
+        AND t.org_id = #{orgId}
+        <if test="deptId != null and deptId != ''">
+            AND t.dept_id != #{deptId}
+        </if>
+    </select>
+
+    <select id="getPagedList" resultMap="AuthzDepartmentMap" parameterType="AuthzDepartmentEntity" useCache="false">
+        SELECT
+        t.org_id,
+        (select x.org_name from t_org_list x where x.org_id = t.org_id) as org_name,
+        t.dept_id,
+        t.dept_code,
+        t.dept_name,
+        t.dept_intro,
+        t.dept_parent,
+        t.dept_uid,
+        t.dept_status,
+        t.time24
+        FROM t_org_dept t
+        <where>
+            <if test="model.orgId != null and model.orgId != ''">
+                and t.org_id = #{model.orgId}
+            </if>
+            <if test="model.name != null and model.name != ''">
+                and t.dept_name like CONCAT('%',#{model.name},'%')
+            </if>
+        </where>
+        ORDER By t.time24 ASC
+    </select>
+
+    <select id="getModel" resultMap="AuthzDepartmentMap" parameterType="java.lang.String" useCache="true">
+        SELECT t.org_id,
+               (select x.org_name from t_org_list x where x.org_id = t.org_id) as org_name,
+               t.dept_id,
+               t.dept_code,
+               t.dept_name,
+               t.dept_intro,
+               t.dept_parent,
+               t.dept_uid,
+               t.dept_status,
+               t.time24
+        FROM t_org_dept t
+        WHERE t.dept_id = #{id}
+    </select>
+
+    <select id="getModelList" resultMap="AuthzDepartmentMap" parameterType="java.lang.String" useCache="false">
+        SELECT
+        t.org_id,
+        (select x.org_name from t_org_list x where x.org_id = t.org_id) as org_name,
+        t.dept_id,
+        t.dept_code,
+        t.dept_name,
+        t.dept_intro,
+        t.dept_parent,
+        t.dept_uid,
+        t.dept_status,
+        t.time24
+        FROM t_org_dept t
+        <if test="key != null and key != ''">
+            WHERE t.dept_id = #{key,jdbcType=INTEGER}
+        </if>
+    </select>
+
+    <select id="getPairValues" resultMap="PairMap" parameterType="java.lang.String" useCache="true">
+        SELECT t.dept_id, t.dept_name
+        FROM t_org_dept t
+        WHERE t.dept_status = 1
+          AND t.org_id = #{key}
+    </select>
+
+</mapper>

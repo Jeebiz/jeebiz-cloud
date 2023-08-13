@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="cn.yivi.controller">
+        <context:exclude-filter type="annotation" expression="org.springframework.stereotype.Controller"/>
+    </context:component-scan>
+
+    <!-- 注册调度任务 -->
+    <bean id="mapScheduler" lazy-init="false" autowire="no"
+          class="org.springframework.scheduling.quartz.SchedulerFactoryBean" destroy-method="destroy">
+        <!--可选，QuartzScheduler 启动时更新己存在的Job，这样就不用每次修改targetObject后删除qrtz_job_details表对应记录了 -->
+        <property name="overwriteExistingJobs" value="true"/>
+        <!--必须的，QuartzScheduler 延时启动，应用启动完后 QuartzScheduler 再启动 -->
+        <property name="startupDelay" value="30"/>
+        <property name="autoStartup" value="true"/>
+        <property name="waitForJobsToCompleteOnShutdown" value="true"/>
+        <property name="configLocation" value="classpath:quartz.properties"/>
+        <property name="applicationContextSchedulerContextKey" value="applicationContext"/>
+        <property name="triggers">
+            <list>
+                <ref bean="helloCronTrigger"/>
+                <ref bean="monitorCronTrigger"/>
+            </list>
+        </property>
+    </bean>
+
+    <!--1 helloJobTask-->
+    <bean id="helloJobTask" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <!-- durability 表示任务完成之后是否依然保留到数据库，默认false   -->
+        <property name="durability" value="true"/>
+        <property name="requestsRecovery" value="true"/>
+        <property name="jobClass">
+            <value>cn.yivi.quartz.MethodInvokingJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="targetObject" value="helloJob"/>
+                <entry key="targetMethod" value="helloDetailJob"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="helloCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="helloJobTask"/>
+        <!-- 每一分钟执行一次 -->
+        <property name="cronExpression" value="0 0/1 * * * ?"/>
+        <property name="misfireInstruction" value="2"/>
+    </bean>
+
+    <!--2 monitorJobTask-->
+    <bean id="monitorJobTask" class="org.springframework.scheduling.quartz.JobDetailFactoryBean">
+        <!-- durability 表示任务完成之后是否依然保留到数据库，默认false   -->
+        <property name="durability" value="true"/>
+        <property name="requestsRecovery" value="true"/>
+        <property name="jobClass">
+            <value>cn.yivi.quartz.MethodInvokingJob</value>
+        </property>
+        <property name="jobDataAsMap">
+            <map>
+                <entry key="targetObject" value="monitorJob"/>
+                <entry key="targetMethod" value="orderMonitorScheduled"/>
+            </map>
+        </property>
+    </bean>
+    <bean id="monitorCronTrigger" class="org.springframework.scheduling.quartz.CronTriggerFactoryBean">
+        <property name="jobDetail" ref="monitorJobTask"/>
+        <!-- 每一分钟执行一次 -->
+        <property name="cronExpression" value="0 0/1 * * * ?"/>
+        <property name="misfireInstruction" value="2"/>
+    </bean>
+
+
+    <bean id="helloJob" class="cn.yivi.quartz.HelloJob"></bean>
+    <bean id="monitorJob" class="cn.yivi.quartz.YiViOrderMonitorJob"></bean>
+
+</beans>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.hiwepy.boot.authz.rbac0.dao.IAuthzUserDao">
+
+    <resultMap id="UserMap" type="UserModel">
+        <result property="id" column="U_ID"/>
+        <result property="username" column="U_USERNAME"/>
+        <result property="password" column="U_PASSWORD"/>
+        <result property="phone" column="U_PHONE"/>
+        <result property="email" column="U_EMAIL"/>
+        <result property="status" column="U_STATUS"/>
+        <result property="time24" column="U_TIME24"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="ServiceRegistryModel">
+        insert into t_USER_LIST(U_ID, U_USERNAME, U_PASSWORD, U_PHONE, U_EMAIL, U_STATUS)
+        values (sys_guid(), #{username}, #{password}, #{phone}, #{email,jdbcType=CLOB}, '1')
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        DELETE
+        FROM t_USER_LIST
+        WHERE U_ID = #{id}
+    </delete>
+
+    <update id="update" parameterType="UserModel">
+        update t_USER_LIST t
+        <set>
+            <if test="password != null and password != ''">t.U_PASSWORD = #{password},</if>
+            <if test="phone != null and phone != ''">t.U_PHONE = #{phone},</if>
+            <if test="email != null and email != ''">t.U_EMAIL = #{email},</if>
+        </set>
+        where t.U_ID = #{id}
+    </update>
+
+    <select id="getPagedList" resultMap="UserMap" parameterType="UserModel">
+        select t.U_ID,t.U_USERNAME,'******' as U_PASSWORD,t.U_PHONE,t.U_EMAIL,t.U_STATUS,t.U_TIME24
+        from t_USER_LIST t
+        <where>
+            <if test="status != null and status != ''">
+                and t.U_STATUS = #{status}
+            </if>
+            <if test="username != null and username != ''">
+                and t.U_USERNAME like '%'|| #{username} ||'%'
+            </if>
+        </where>
+    </select>
+
+</mapper>

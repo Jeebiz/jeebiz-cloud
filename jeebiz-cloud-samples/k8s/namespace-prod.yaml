@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+   name: jeebiz-sample-prod
+   labels:
+     name: jeebiz-sample-prod
+   annotations:
+     kubesphere.io/alias-name: Jeebiz Cloud 示例 -生产环境
+     kubesphere.io/description: Jeebiz Cloud 示例 -生产环境

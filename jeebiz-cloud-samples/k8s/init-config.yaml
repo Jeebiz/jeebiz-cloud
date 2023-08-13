@@ -1,0 +1,35 @@
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: coding-registry-cred-sample
+  namespace: ops-prod
+  annotations:
+    kubesphere.io/alias-name: Jeebiz Cloud - 示例服务镜像秘钥
+    kubesphere.io/creator: admin
+    kubesphere.io/description: Jeebiz Cloud - 示例服务镜像秘钥
+data:
+  .dockerconfigjson: >-
+    eyJhdXRocyI6eyJodHRwczovL3dhbnMtaHotZG9ja2VyLnBrZy5jb2RpbmcubmV0Ijp7InVzZXJuYW1lIjoicHRmZDR1Zm9oNnEyIiwicGFzc3dvcmQiOiJlMjY0MTIyZjU1M2MyMTQwOTQ1NGE1NjExMmU0NDMyOWNmZjJkMWNlIiwiZW1haWwiOiJoaXdlcHlAMTYzLmNvbSIsImF1dGgiOiJjSFJtWkRSMVptOW9ObkV5T21VeU5qUXhNakptTlRVell6SXhOREE1TkRVMFlUVTJNVEV5WlRRME16STVZMlptTW1ReFkyVT0ifX19
+type: kubernetes.io/dockerconfigjson
+---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: nacos-config
+  annotations:
+    field.cattle.io/description: nacos 参数
+data:
+  nacos.config.server-addr: 'http://192.168.1.170:8848'
+  nacos.config.namespace: 35db1c7c-54eb-44b4-ac33-4306915dc1f2
+  nacos.config.username: nacos
+  nacos.config.password: hpkRzkC7pcDnYp3e
+  nacos.discovery.namespace: 35db1c7c-54eb-44b4-ac33-4306915dc1f2
+  nacos.discovery.username: nacos
+  nacos.discovery.password: hpkRzkC7pcDnYp3e
+  spring.cloud.nacos.server-addr: 'http://192.168.1.170:8848'
+  spring.cloud.nacos.namespace: 35db1c7c-54eb-44b4-ac33-4306915dc1f2
+  spring.cloud.nacos.password: nacos
+  spring.cloud.nacos.username: hpkRzkC7pcDnYp3e
+  spring.cloud.nacos.access-key: nacos
+  spring.cloud.nacos.secret-key: hpkRzkC7pcDnYp3e

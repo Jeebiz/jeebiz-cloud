@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="io.hiwepy.cloud.base.task.mapper.TaskInfoMapper">
+
+    <resultMap id="TaskInfoVO" type="io.hiwepy.cloud.base.task.vo.TaskInfoVO">
+        <result property="id" column="id"/>
+        <result property="name" column="task_name"/>
+        <result property="desc" column="task_desc"/>
+        <result property="bizType" column="biz_type"/>
+        <result property="status" column="status"/>
+        <result property="fileUrl" column="file_path"/>
+        <result property="createTime" column="create_time"/>
+    </resultMap>
+
+    <select id="getPagedTaskList" resultMap="TaskInfoVO">
+        SELECT
+        t.id,
+        t.task_name,
+        t.task_desc,
+        t.biz_type,
+        t.status,
+        t.file_path,
+        t.create_time
+        FROM t_task_info t
+        <where>
+            <if test="parm.schoolCode != null and parm.schoolCode != ''">
+                AND t.school_code = #{parm.schoolCode}
+            </if>
+            <if test="parm.userId != null and parm.userId != ''">
+                AND t.user_id = #{parm.userId}
+            </if>
+            <if test="parm.bizType != null">
+                AND t.biz_type = #{parm.bizType}
+            </if>
+            <if test="parm.status != null">
+                AND t.status = #{parm.status}
+            </if>
+        </where>
+        order by t.biz_type asc, t.create_time desc
+    </select>
+
+</mapper>

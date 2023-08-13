@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.org.dao.AuthzOrganizationMapper">
+
+    <resultMap id="AuthzOrganizationMap" type="AuthzOrganizationEntity">
+        <id property="id" column="org_id"/>
+        <result property="code" column="org_code"/>
+        <result property="name" column="org_name"/>
+        <result property="intro" column="org_intro"/>
+        <result property="parent" column="org_parent"/>
+        <result property="status" column="org_status"/>
+        <result property="creator" column="creator"/>
+        <result property="createTime" column="create_time"/>
+        <result property="modifyer" column="modifyer"/>
+        <result property="modifyTime" column="modify_time"/>
+    </resultMap>
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="org_id"/>
+        <result property="value" column="org_name"/>
+    </resultMap>
+
+    <update id="setStatus" parameterType="java.lang.String" flushCache="true">
+        UPDATE t_org_list t
+        SET org_status = #{status}
+        WHERE org_id = #{id}
+    </update>
+
+    <select id="getRootCount" resultType="int" useCache="false">
+        SELECT count(t.org_id)
+        FROM t_org_list t
+        WHERE t.org_parent = 0
+    </select>
+
+    <select id="getCountByParent" resultType="java.lang.Long" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.org_id)
+        FROM t_org_list t
+        WHERE t.org_parent = #{parent}
+    </select>
+
+    <select id="getDeptCount" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.dept_id)
+        FROM t_org_dept t
+        WHERE t.org_id = #{id}
+    </select>
+
+    <select id="getCountByCode" resultType="java.lang.Long" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.org_id)
+        FROM t_org_list t
+        WHERE t.org_code = #{code}
+        <if test="origin != null and origin != ''">
+            AND t.org_id != #{origin}
+        </if>
+    </select>
+
+    <select id="getCountByName" resultType="java.lang.Long" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.org_id)
+        FROM t_org_list t
+        WHERE t.org_name = #{name}
+        <if test="origin != null and origin != ''">
+            AND t.org_id != #{origin}
+        </if>
+    </select>
+
+    <select id="getPagedList" resultMap="AuthzOrganizationMap" parameterType="AuthzDepartmentEntity" useCache="false">
+        SELECT
+        t.org_id,
+        t.org_code,
+        t.org_name,
+        t.org_intro,
+        t.org_parent,
+        t.org_status,
+        t.creator,
+        t.create_time,
+        t.modifyer,
+        t.modify_time
+        FROM t_org_list t
+        <where>
+            <if test="model.name != null and model.name != ''">
+                and t.org_name like '%'||#{model.name}||'%'
+            </if>
+        </where>
+        ORDER By t.org_id DESC
+    </select>
+
+    <select id="getModel" resultMap="AuthzOrganizationMap" parameterType="java.lang.String" useCache="true">
+        SELECT t.org_id,
+               t.org_code,
+               t.org_name,
+               t.org_intro,
+               t.org_parent,
+               t.org_status,
+               t.creator,
+               t.create_time,
+               t.modifyer,
+               t.modify_time
+        FROM t_org_list t
+        WHERE t.org_id = #{id}
+    </select>
+
+    <select id="getOrgList" resultMap="AuthzOrganizationMap" useCache="false">
+        SELECT t.org_id,
+               t.org_code,
+               t.org_name,
+               t.org_intro,
+               t.org_parent,
+               t.org_status,
+               t.creator,
+               t.create_time,
+               t.modifyer,
+               t.modify_time
+        FROM t_org_list t
+    </select>
+
+    <select id="getModelList" resultMap="AuthzOrganizationMap" parameterType="java.lang.String" useCache="false">
+        SELECT
+        t.org_id,
+        t.org_code,
+        t.org_name,
+        t.org_intro,
+        t.org_parent,
+        t.org_status,
+        t.creator,
+        t.create_time,
+        t.modifyer,
+        t.modify_time
+        FROM t_org_list t
+        <if test="key != null and key != ''">
+            WHERE t.org_id != #{key}
+        </if>
+    </select>
+
+    <select id="getPairValues" resultMap="PairMap" parameterType="java.lang.String" useCache="true">
+        SELECT t.org_id, t.org_name
+        FROM t_org_list t
+        WHERE t.org_status = 1
+        <if test="key != null and key != ''">
+            and t.org_id != #{key}
+        </if>
+    </select>
+
+</mapper>

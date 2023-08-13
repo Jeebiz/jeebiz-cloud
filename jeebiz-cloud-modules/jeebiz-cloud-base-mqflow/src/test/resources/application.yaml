@@ -1,0 +1,21 @@
+wx:
+  pay:
+    app-id: #微信公众号或者小程序等的appid
+    apiv3-key: #该值为（账户中心-安全中心-API安全）下的APIv3密钥
+    mch-id: #微信支付商户号
+    mch-key: #该值为（账户中心-安全中心-API安全）下的API密钥
+
+alipay:  protocol: https
+  gateway-host: openapi.alipay.com
+  sign-type: RSA2
+  app-id: <-- 请填写您的AppId，例如：2019091767145019 -->
+  merchant-private-key: <-- 请填写您的应用私钥，例如：MIIEvQIBADANB ... ... -->
+  merchant-cert-path: <-- 请填写您的应用公钥证书文件路径，例如：/foo/appCertPublicKey_2019051064521003.crt -->
+  alipay-cert-path: <-- 请填写您的支付宝公钥证书文件路径，例如：/foo/alipayCertPublicKey_RSA2.crt -->
+  alipay-root-cert-path: <-- 请填写您的支付宝根证书文件路径，例如：/foo/alipayRootCert.crt -->  
+     # 注：如果采用非证书模式，则无需赋值上面的三个证书路径，改为赋值如下的支付宝公钥字符串即可
+  alipay-public-key: <-- 请填写您的支付宝公钥，例如：MIIBIjANBg... -->
+  # 可设置异步通知接收服务地址（可选）
+  notify-url: <-- 请填写您的支付类接口异步通知接收服务地址，例如：https://www.test.com/callback -->
+  # 可设置AES密钥，调用AES加解密相关接口时需要（可选）
+  encrypt-key: <-- 请填写您的AES密钥，例如：aa4BtZ4tspm2wnXLb1ThQA== -->

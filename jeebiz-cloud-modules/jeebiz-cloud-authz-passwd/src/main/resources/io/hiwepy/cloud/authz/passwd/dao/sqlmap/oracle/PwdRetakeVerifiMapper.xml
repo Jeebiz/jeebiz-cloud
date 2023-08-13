@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.passwd.dao.IPwdRetakeVerifiDao">
+
+    <resultMap id="PwdRetakeVerifiMap" type="PwdRetakeVerifiModel">
+        <id property="id" column="V_ID"/>
+        <result property="name" column="V_NAME"/>
+        <result property="label" column="V_LABEL"/>
+        <result property="desc" column="V_DESC"/>
+        <result property="rules" column="V_RULES"/>
+        <result property="required" column="V_REQUIRED"/>
+        <result property="status" column="V_STATUS"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="PwdRetakeVerifiModel">
+        INSERT INTO SYS_PASSWD_VERIFI(V_NAME, V_LABEL, V_DESC, V_RULES, V_REQUIRED, V_STATUS)
+        VALUES (#{name}, #{label}, #{desc}, #{rules}, #{required}, '1')
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE
+        FROM SYS_PASSWD_VERIFI t WHERE　t.V_ID = #{id}
+    </delete>
+
+    <update id="update" parameterType="PwdRetakeVerifiModel">
+        UPDATE SYS_PASSWD_VERIFI t
+        SET V_NAME     = #{name},
+            V_LABEL    = #{label},
+            V_DESC     = #{desc},
+            V_RULES    = #{rules},
+            V_REQUIRED = #{required},
+            V_STATUS   = #{status}
+        WHERE t.V_ID = #{id}
+    </update>
+
+    <select id="getModel" parameterType="java.lang.String" resultMap="PwdRetakeVerifiMap">
+        SELECT t.V_ID, t.V_NAME, t.V_LABEL, t.V_DESC, t.V_RULES, t.V_REQUIRED, t.V_STATUS
+        FROM SYS_PASSWD_VERIFI t
+        WHERE t.V_ID = #{id}
+    </select>
+
+    <select id="getVerifiList" resultMap="PwdRetakeVerifiMap">
+        SELECT t.V_ID, t.V_NAME, t.V_LABEL, t.V_DESC, t.V_RULES, t.V_REQUIRED, t.V_STATUS
+        FROM SYS_PASSWD_VERIFI t
+        WHERE t.V_STATUS = 1
+        ORDER BY t.V_NAME ASC
+    </select>
+
+</mapper>

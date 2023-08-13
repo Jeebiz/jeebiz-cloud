@@ -1,0 +1,207 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionTableDao">
+
+    <resultMap id="DataPermissionTableMap" type="DataPermissionTableModel">
+        <!-- 数据权限对象ID -->
+        <result property="id" column="T_ID"/>
+        <!-- 数据权限对象名称 -->
+        <result property="name" column="T_NAME"/>
+        <!-- 数据对象（实体表名称） -->
+        <result property="table" column="T_TABLE"/>
+        <!-- 可用状态:（0:不可用|1：可用） -->
+        <result property="status" column="T_STATUS"/>
+        <!-- 数据权限组排序 -->
+        <result property="order" column="T_ORDER"/>
+        <!--  数据权限对象字段集合 -->
+        <collection property="columns" column="{tid=T_ID}" select="getTableColumns"></collection>
+    </resultMap>
+
+    <resultMap id="DataPermissionTableColumnMap" type="DataPermissionTableColumnModel">
+        <!-- 数据权限对象字段ID -->
+        <result property="id" column="C_ID"/>
+        <!-- 受数据权限对象字段限制的业务数据表字段名称（实体表字段列名称） -->
+        <result property="name" column="C_NAME"/>
+        <!-- 数据权限对象字段标签（页面显示名称） -->
+        <result property="label" column="C_LABEL"/>
+        <!-- 受限数据项查询SQL -->
+        <result property="sql" column="C_SQL"/>
+        <!-- 受限数据项字段可用状态:（0:不可用|1：可用） -->
+        <result property="status" column="C_STATUS"/>
+        <!--受限数据项字段排序 -->
+        <result property="order" column="C_ORDER"/>
+    </resultMap>
+
+    <resultMap id="PairMap" type="PairModel">
+        <result property="key" column="T_ID"/>
+        <result property="value" column="T_NAME"/>
+    </resultMap>
+
+    <resultMap id="PairColumnMap" type="PairModel">
+        <result property="key" column="C_ID"/>
+        <result property="value" column="C_LABEL"/>
+    </resultMap>
+
+    <resultMap id="DataPermissionDataMap" type="PairModel">
+        <result property="key" column="KEY"/>
+        <result property="value" column="VALUE"/>
+    </resultMap>
+
+    <insert id="insert" parameterType="DataPermissionTableModel" flushCache="true">
+        <selectKey keyProperty="id" order="BEFORE" resultType="String">
+            SELECT sys_guid() FROM dual
+        </selectKey>
+        <![CDATA[
+			DECLARE
+			BEGIN
+		]]>
+        insert into SYS_DATA_PERMS_TABLE(T_ID,T_NAME,T_TABLE,T_STATUS,T_ORDER)
+        values(#{id},#{name},#{table},#{status},#{order});
+        <foreach collection="items" item="item" separator=";" close=";">
+            insert into SYS_DATA_PERMS_TABLE_COLUMNS(T_ID,C_NAME,C_LABEL,C_SQL,C_STATUS,C_ORDER)
+            values(#{id},#{item.name},#{item.label},#{item.sql},#{item.status},#{item.order})
+        </foreach>
+        <![CDATA[
+			END;
+		]]>
+    </insert>
+
+    <insert id="insertColumn" parameterType="DataPermissionTableColumnModel" flushCache="true">
+        insert into SYS_DATA_PERMS_TABLE_COLUMNS(T_ID, C_NAME, C_LABEL, C_SQL, C_STATUS, C_ORDER)
+        values (#{tid}, #{name}, #{label}, #{sql}, #{status}, #{order})
+    </insert>
+
+    <delete id="deleteColumn" flushCache="true">
+        DELETE
+        FROM SYS_DATA_PERMS_TABLE_COLUMNS t
+        WHERE t.C_ID = #{id}
+    </delete>
+
+    <delete id="delete" flushCache="true">
+        DECLARE
+        BEGIN
+        DELETE
+        FROM SYS_DATA_PERMS_TABLE_COLUMNS t
+        WHERE t.T_ID = #{id};
+        DELETE
+        FROM SYS_DATA_PERMS_TABLE t
+        WHERE t.T_ID = #{id};
+        END;
+    </delete>
+
+    <delete id="batchDelete" flushCache="true">
+        DECLARE
+        BEGIN
+        DELETE FROM SYS_DATA_PERMS_TABLE_COLUMNS t WHERE t.T_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>;
+        DELETE FROM SYS_DATA_PERMS_TABLE t WHERE t.T_ID IN
+        <foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>;
+        END;
+    </delete>
+
+    <update id="update" parameterType="DataPermissionTableModel" flushCache="true">
+        UPDATE SYS_DATA_PERMS_TABLE t
+        SET t.T_NAME   = #{name},
+            t.T_TABLE  = #{table},
+            t.T_STATUS = #{status},
+            t.T_ORDER  = #{order}
+        WHERE t.T_ID = #{id}
+    </update>
+
+    <update id="updateColumn" parameterType="DataPermissionTableColumnModel" flushCache="true">
+        UPDATE SYS_DATA_PERMS_TABLE_COLUMNS t
+        SET t.C_NAME   = #{name},
+            t.C_LABEL  = #{label},
+            t.C_SQL    = #{sql},
+            t.C_STATUS = #{status},
+            t.C_ORDER  = #{order}
+        WHERE t.C_ID = #{id}
+    </update>
+
+    <select id="getCountByName" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.T_ID)
+        FROM SYS_DATA_PERMS_TABLE t
+        WHERE t.T_NAME = #{name}
+        <if test="origin != null and origin != ''">
+            AND t.T_ID != #{origin}
+        </if>
+    </select>
+
+    <select id="getPagedList" resultMap="DataPermissionTableMap" parameterType="DataPermissionTableModel"
+            useCache="false">
+        SELECT
+        t.T_ID,
+        t.T_NAME,
+        t.T_TABLE,
+        t.T_STATUS,
+        t.T_ORDER
+        FROM SYS_DATA_PERMS_TABLE t
+        <where>
+            <if test="model.name != null and model.name != ''">
+                and t.T_NAME like '%'|| #{model.name} || '%'
+            </if>
+            <if test="model.status != null and model.status != ''">
+                and t.T_STATUS = #{model.status}
+            </if>
+        </where>
+        ORDER By t.T_ORDER ASC
+    </select>
+
+    <select id="getDataList" resultMap="DataPermissionDataMap" parameterType="DataPermissionTableModel"
+            useCache="false">
+        ${sql}
+    </select>
+
+    <select id="getModel" resultMap="DataPermissionTableMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.T_ID,
+               t.T_NAME,
+               t.T_TABLE,
+               t.T_STATUS,
+               t.T_ORDER
+        FROM SYS_DATA_PERMS_TABLE t
+        WHERE t.T_ID = #{id}
+    </select>
+
+    <select id="getColumnModel" resultMap="DataPermissionTableColumnMap" parameterType="java.lang.String"
+            useCache="false">
+        SELECT t.C_ID,
+               t.C_NAME,
+               t.C_LABEL,
+               t.C_SQL,
+               t.C_STATUS,
+               t.C_ORDER
+        FROM SYS_DATA_PERMS_TABLE_COLUMNS t
+        WHERE t.C_ID = #{id}
+    </select>
+
+    <select id="getTableColumns" resultMap="DataPermissionTableColumnMap" parameterType="java.lang.String"
+            useCache="false">
+        SELECT t.C_ID,
+               t.C_NAME,
+               t.C_LABEL,
+               t.C_SQL,
+               t.C_STATUS,
+               t.C_ORDER
+        FROM SYS_DATA_PERMS_TABLE_COLUMNS t
+        WHERE t.T_ID = #{tid}
+    </select>
+
+    <select id="getPairList" resultMap="PairMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.T_ID, t.T_NAME
+        FROM SYS_DATA_PERMS_TABLE t
+        WHERE t.T_STATUS = 1
+        ORDER BY t.T_ORDER ASC
+    </select>
+
+    <select id="getPairValues" resultMap="PairColumnMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.C_ID, t.C_LABEL
+        FROM SYS_DATA_PERMS_TABLE_COLUMNS t
+        WHERE t.T_ID = #{key}
+    </select>
+
+</mapper>

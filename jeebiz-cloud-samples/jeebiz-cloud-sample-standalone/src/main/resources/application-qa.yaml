@@ -1,0 +1,386 @@
+################################################################################################################  
+###Jeebiz-Cloud 系统参数：
+################################################################################################################
+jeebiz:
+  authz:
+    def-password: 123456
+  facex:
+    provider: arcface
+
+################################################################################################################  
+###Oksms 短信服务配置：  
+################################################################################################################
+oksms:
+  enabled: true
+
+################################################################################################################
+###  微信公众号/服务号/小程序配置(公司公众号信息)：
+################################################################################################################
+wx:
+  mp:
+    # 微信公众号的appid.
+    app-id: wxd7a551466a0cfa03
+    # 微信公众号的app secret.
+    secret: eebf73aad462dab6bbdd8233919cb1a4
+    # 配置存储
+    config-storage:
+      type: memory
+  miniapp:
+    # 微信小程序的appid.
+    appid: wxe318a1a350e2bf73
+    # 微信小程序的Secret.
+    secret: ac08a12f9551f2c30c9f6a2e69539c89
+    # 消息格式，XML或者JSON.
+    msg-data-format: JSON
+
+################################################################################################################
+###  钉钉微应用/小程序配置
+################################################################################################################
+dingtalk:
+  # 知乎者也下的配置
+  corp-id: ding5e6b33e760fd296b35c2f4657eb6378f
+  crop-apps:
+   # 智慧考勤小程序
+  - agent-id: 589383556
+    app-key: dingx0rblvppiurvk4xy
+    app-secret: _8y3Vgjk1iigMQZc3_bXR__vIIxQVludc3yZ6jo0tX6Ug2cD8cMG-0iRtURcrGaI
+  # 智慧考勤H5微应用
+  - agent-id: 589481741
+    app-key: dingxhppjmnh508naskv
+    app-secret: mqFoxuq0XT6XisFkvOc13tG1B_ESFhCXUwenqsWDVrcp32pPWXUpyepXQwnHfg92
+ # 浙音钉钉应用配置：
+ #corp-id: ding642f3d326a6991f335c2f4657eb6378f
+ #crop-apps:
+ # 智慧考勤小程序
+ #- agent-id: 492904145
+ #  app-key: dingaojyz0vkv1jl54ue
+ #  app-secret: xUx_Va0hPbv7zY8kK7-YxEI3XPXM25tJ6eyBz3dtaYowVekXo_BfNg2XpXicJmZo
+ # 智慧考勤H5微应用
+ #- agent-id: 577429835
+ #  app-key: dinguvv4egut1ji6qtkg
+ #  app-secret: e0-op2_2pHaLSzou32ZtNSdZqogr9u2pNS_9UhkPuSvS7LO_U00ERRpwYmxCz8rN
+  
+################################################################################################################  
+###Pac4j 第三方登录（QQ、微信、易班、康赛）配置：  
+################################################################################################################
+pac4j:
+  enabled: false
+  default-client-name: yiBanLightApp
+  callback-url: http://172.16.88.245:8088/jeebiz-authz/authz/login/pac4j?client_name=uniauth&proxy=false
+  callback-url-fixed: false
+  client-parameter-name: client_name
+  clients: yiBanLightApp
+  logout:
+    path-pattern: /**/logout/pac4j
+    default-url: http://172.16.88.248/#/login
+  cas:
+    enabled: false
+    accept-any-proxy: true
+    gateway: false
+    login-url: http://10.30.186.104/sso/login
+    logout-url: http://10.30.186.104/sso/logout
+    prefix-url: http://10.30.186.104/sso/
+    protocol: cas20-proxy
+    renew: false
+    service-url: http://172.16.88.245:8088/jeebiz-authz
+    # Cas客户端配置
+    #cas-client: true
+    #cas-client-name: cas
+    # Cas代理客户端配置
+    direct-cas-client: true
+    direct-cas-client-name: cas
+    #direct-cas-proxy-client: true
+    #direct-cas-proxy-client-name: cas-proxy    
+  uniauth:
+    enabled: false
+    token:
+      client-name: uniauth
+      default-url: http://172.16.88.248/#/login
+      custom-params:
+        syskey: V+yUhswUbJ2FaDOH6gumdTbNUyOOfD7+/AXBuiQo8JyzxTaHlFJJRxb+436eay0oMvA16WoUDIdi72RoaKRDJSFUkn9eaxkYQBXwkC0xC2HC4r8AQlYmg4SYPMjoTOWdiKZum+5ToE8PfEX+8V8E4lBAxYg1uva3JHBi0/J85ak=
+      encode-params: true
+      profile-url: http://172.16.70.31:8080/yyxy_uniauth/ser/vaildTocken.action
+      support-post-request: true
+      support-get-request: true
+      token-param-name: tocken
+    signature:
+      client-name: uniauth-signature
+      default-url: http://172.16.88.248/#/login
+  oauth:
+    yiban:
+      name: yiban
+  yiban:
+    lightapp:
+      enabled: false
+      app-id: 2d1372313f439c52
+      app-secret: 198a89e9d9803f6314f6a4bbbe5feac4
+      login-url: http://f.yiban.cn/iapp575140
+  nbei:
+    microschool:
+      enabled: false
+      host: http://10.30.186.124:7821/wxService/api/platform/base
+      app-code: NSXG_SERVICE
+      app-key: 34ea5435865946cb975ce4f03af14285
+
+################################################################################################################  
+### Filestore存储服务（FastDFS、MinIO） 基本配置：  
+################################################################################################################
+# FastDFS
+fdfs:
+  enabled: true
+  endpoint: http://180.76.120.252:8089
+  secret-key: 6fGkkBwRnaDjfXdh
+  expire: 900
+  connect-timeout: 60000
+  so-timeout: 60000
+  pool:
+    #从池中借出的对象的最大数目（配置为-1表示不限制）
+    max-total: -1
+    #获取连接时的最大等待毫秒数(默认配置为5秒)
+    max-wait-millis: 10000
+    #每个key最大连接数
+    max-total-per-key: 50
+    #每个key对应的连接池最大空闲连接数
+    max-idle-per-key: 10
+    #每个key对应的连接池最小空闲连接数
+    max_idle_per_key: 5  
+  thumb-image:             #缩略图生成参数
+    width: 150
+    height: 150
+  tracker-list:
+  - 180.76.120.252:22122
+# MinIO
+minio:
+  enabled: false
+  endpoint: http://192.168.2.201:9000
+  access-key: C63M14XR2KF9UHNBR1OE
+  secret-key: dT7ld4M+QD2sGCXw+CgcFCo5t3U4iSgiTm+3eIuA
+# 存储类型配置
+file:
+  # 指定存储配置
+  storage: fdfs
+
+################################################################################################################  
+###人脸识别配置：  
+################################################################################################################
+# 百度人脸识别  
+baidu:
+  face:
+    v3:
+      enabled: true
+      client-id: E7miOsXCAM5qoYkex4eRxvIF
+      client-secret: Iu3MPTrTsa1M1bzjk3nzodHzmj0xngFO
+# 虹软人脸识别 （ArcFace）免费版本
+arcface:
+  enabled: true
+  app-id: Ch1L1erMCtrCeGJHw5RuQaPRCy7aVer7EERujuY2LgoJ
+  # Windows(X86)
+  #sdk-key: DVc82tbUinRUhX7VMo4kWzF3r3KnbBrKcPMcWXb2Jq2r
+  # Windows(X64)
+  #sdk-key: DVc82tbUinRUhX7VMo4kWzF3uHZ3u3HrMvv5cSidXmxu
+  # Linux64
+  sdk-key: DVc82tbUinRUhX7VMo4kWzF3mAyqrijbuZCiiUnizmPy
+  detect-mode: asf-detect-mode-image
+  detect-face-max-num: 1
+  detect-face-orient-priority: asf-op-0-only
+  detect-face-scale-val: 30
+  function-configuration:
+    support-age: true
+    support-face-detect: true
+    support-face-recognition: true
+    support-face3d-angle: true
+    support-gender: true
+    support-iRLiveness: true
+    support-liveness: true
+  #lib-path: D:\libs\WIN64
+  pool2:
+    max-idle: 5
+    max-total: 10
+    test-on-borrow: true
+    test-on-create: true
+    test-on-return: false
+    test-while-idle: false
+    jmx-enabled: false
+# OpenCV 人脸识别
+opencv:
+  face:
+    enabled: true
+    temp: D:/faces
+      
+################################################################################################################
+###Spring Boot 相关组件（SpringMVC、Freemarker、Session、Cache、DataSource）配置：
+################################################################################################################
+spring:
+  # 数据源配置：
+  datasource:
+    name: jeebiz-cloud
+    type: com.alibaba.druid.pool.DruidDataSource
+    #driver-class-name: oracle.jdbc.OracleDriver
+    #url: jdbc:oracle:thin:@192.168.2.161:1521:orcl
+    #username: zh_cloud_local
+    #password: zh_cloud_local 
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://47.98.123.43:3306/jeebiz_cloud?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&allowMultiQueries=true
+    username: jeebiz_cloud
+    password: EXrL5Bkm5HWp2fEy  
+  # Redis相关配置
+  redis:
+    # Redis服务器地址
+    host: 180.76.120.252
+    # Redis服务器连接端口
+    port: 6379
+    # Redis服务器连接密码（默认为空）
+    password: HycBsP5cSp3enyGw
+  # 权限控制
+  security:
+    # 默认路径拦截规则定义
+    filter-chain-definition-map:
+      '[/]': anon
+      '[/**/favicon.ico]': anon
+      '[/webjars/**]': anon
+      '[/assets/**]': anon
+      '[/error*]': anon
+      '[/logo/**]': anon
+      '[/swagger-ui.html**]': anon
+      '[/swagger-resources/**]': anon
+      '[/doc.html]': anon
+      '[/bycdao-ui/**]': anon
+      '[/v2/**]': anon
+      '[/v2/api-docs]': anon
+      '[/kaptcha*]': anon
+      '[/actuator*]': anon
+      '[/actuator/**]': anon
+      '[/authz/user/register]': anon
+      '[/authz/qrcode/info]': anon
+      '[/authz/qrcode/bind]': anon
+      '[/authz/login/code2Session]': anon
+      '[/authz/login/refershJwt]': anon
+      '[/authz/userRelation/newOrrenew]': anon
+      '[/authz/logout]': anon
+      '[/authz/thirdpt/weixin/ma/config]': anon
+      '[/authz/thirdpt/weixin/ma/code2Session]': anon
+      '[/authz/thirdpt/weixin/ma/binding]': anon    
+      '[/authz/thirdpt/weixin/mp/oauth2]': anon
+      '[/authz/thirdpt/weixin/mp/code2Token]': anon
+      '[/authz/thirdpt/weixin/mp/qrconnect]': anon             
+      '[/authz/thirdpt/weixin/mp/subscribe]': anon    
+      '[/authz/thirdpt/weixin/mp/authorize]': anon
+      '[/authz/thirdpt/weixin/mp/config]': anon
+      '[/authz/thirdpt/weixin/mp/binding]': anon   
+      '[/extras/settings/detail]': anon
+      '[/druid/*]': ipaddr[192.168.1.0/24]
+      '[/monitoring]': roles[admin]
+      '[/monitoring2]': roles[1,admin]
+      '[/monitoring3]': perms[1,admin]
+      '[/monitoring4]': perms[1]
+    stateless: true
+    # 账户密码登录
+    jwt:
+      authc:
+        enabled: true
+        continue-chain-before-successful-authentication: false
+        path-pattern: /authz/login/jwt
+        post-only: true
+      authz:
+        enabled: true
+        continue-chain-before-successful-authentication: true
+        path-pattern: /**
+        ignore-patterns:
+        - /authz/login/jwt
+        - /authz/login/dingtalk
+        - /authz/login/pac4j        
+        - /authz/login/cas
+    # 钉钉登录
+    dingtalk:
+      enabled: true
+      authc:
+        path-pattern: /authz/login/dingtalk
+        post-only: false
+    # 二维码扫码登录
+    qrcode:
+      enabled: true
+      authz:
+        path-pattern: /authz/login/qrcode
+    #  第三方登录
+    pac4j:
+      enabled: false
+      authc:
+        path-pattern: /authz/login/pac4j
+        authz-proxy: true
+        authz-proxy-url: http://122.224.247.131:10086/#/client?client_name=yiBanLightApp&proxy=true&target=/portal
+        error-url: http://122.224.247.131:10086
+        redirects:
+          - header-pattern:
+              '[x-requested-with]' : com.yiban.app
+            redirect-url: http://122.224.247.131:10086/#/client?client_name=yiBanLightApp&proxy=true&target=/portal
+            error-url: http://122.224.247.131:10086/#/client?client_name=yiBanLightApp&proxy=true&target=/portal
+      callback:
+        path-pattern: /authz/login/pac4j/callback
+        default-url: http://172.16.88.248/#/client?client_name=uniauth&proxy=true&target=/portal
+    # Cas 单点认证登录
+    cas:
+      enabled: false
+      authc:
+        path-pattern: /authz/login/cas
+        accept-any-proxy: true
+        attributes:
+        - comsys_department
+        - comsys_post
+        - comsys_cardid
+        - comsys_post_type
+        - comsys_educational
+        - comsys_phone
+        - comsys_genders
+        - comsys_name
+        - comsys_loginid
+        - comsys_email
+        - comsys_role
+        - comsys_other_post
+        - comsys_usertype
+        - comsys_teaching_number
+        continue-chain-before-successful-authentication: false
+        frontend-proxy: true
+        frontend-target-url: http://10.30.186.134:8089/#/client?client_name=cas&proxy=true
+        always-use-default-target-url: true
+        default-target-url: /portal
+        gateway: false
+        login-url: http://10.30.186.104/sso/login
+        logout-url: http://10.30.186.104/sso/logout
+        prefix-url: http://10.30.186.104/sso/
+        protocol: cas20-proxy
+        proxy-receptor-url: /authz/login/pac4j-proxy
+        proxy-callback-url: http://10.30.186.134:8080/jeebiz-authz/authz/login/cas-proxy
+        renew: false
+        service-url: http://10.30.186.134:8080/jeebiz-authz/authz/login/cas?client_name=cas
+        service-callback-url: http://10.30.186.134:8080/jeebiz-authz/authz/login/cas?client_name=cas
+        session-mgt:
+          allow-session-creation: true
+          creation-policy: if-required
+    weixin:
+      enabled: true
+      ma:
+        post-only: true
+        path-pattern: /authz/login/weixin/jscode
+      mp:
+        post-only: true
+        path-pattern: /authz/login/weixin/mp
+        redirect-url: https://zhihuxuetang.net/yqh5
+        
+################################################################################################################
+###mybatis-plus (MybatisPlusProperties) 基本配置：
+###http://mp.baomidou.com/#/spring-boot
+################################################################################################################
+mybatis-plus:
+  # Oracle数据库对应的Mybatis脚本
+  #mapper-locations: classpath*:net/jeebiz/**/dao/**/sqlmap/oracle/*.xml
+  # MySQL数据库对应的Mybatis脚本
+  mapper-locations: classpath*:net/jeebiz/**/dao/**/sqlmap/mysql/*.xml
+  #实体扫描，多个package用逗号或者分号分隔
+  type-aliases-package: io.hiwepy.**.dao.entities
+
+################################################################################################################  
+###logging (log4j2) 基本配置：  
+###http://www.cnblogs.com/yhtboke/p/Mybatis.html
+################################################################################################################
+logging:
+  config: classpath:conf/log4j2-dev.xml

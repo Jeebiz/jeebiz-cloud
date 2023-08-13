@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.facex.dao.AuthzFaceRepositoryMapper">
+
+    <resultMap id="AuthzFaceRepositoryMap" type="AuthzFaceRepositoryEntity">
+        <result property="id" column="r_id"/>
+        <result property="name" column="r_name"/>
+        <result property="status" column="r_status"/>
+        <result property="faces" column="r_faces"/>
+        <result property="time24" column="r_time24"/>
+    </resultMap>
+
+    <select id="getCountByName" resultType="int" parameterType="java.lang.String" useCache="false">
+        SELECT count(t.R_ID)
+        FROM t_USER_FACE_REPO t
+        WHERE t.R_NAME = #{name}
+        <if test="origin != null and origin != ''">
+            AND t.R_ID != #{origin}
+        </if>
+    </select>
+
+    <select id="getModel" resultMap="AuthzFaceRepositoryMap" parameterType="java.lang.String" useCache="false">
+        SELECT t.R_ID,
+               t.R_NAME,
+               t.R_STATUS,
+               t.R_STATUS,
+               (SELECT COUNT(x.U_FID) FROM t_USER_FACE x WHERE x.U_RID = t.R_ID) as R_FACES,
+               t.R_TIME24
+        FROM t_USER_FACE_REPO t
+        WHERE t.R_ID = #{id}
+    </select>
+
+    <select id="getPagedList" resultMap="AuthzFaceRepositoryMap" parameterType="AuthzFaceRepositoryModel"
+            useCache="false">
+        SELECT
+        t.R_ID,
+        t.R_NAME,
+        t.R_STATUS,
+        t.R_STATUS,
+        (SELECT COUNT(x.U_FID) FROM t_USER_FACE x WHERE x.U_RID = t.R_ID) as R_FACES,
+        t.R_TIME24
+        FROM t_USER_FACE_REPO t
+        <where>
+            <if test="model.name != null and model.name != ''">
+                and t.R_NAME like CONCAT('%',#{model.name},'%')
+            </if>
+            <if test="model.status != null and model.status != ''">
+                and t.R_STATUS = #{model.visible}
+            </if>
+        </where>
+    </select>
+
+</mapper>

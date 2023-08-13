@@ -1,0 +1,34 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>io.hiwepy</groupId>
+        <artifactId>jeebiz-cloud-modules</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+    </parent>
+    <artifactId>jeebiz-cloud-message-dingtalk</artifactId>
+
+    <dependencies>
+
+        <!-- Jeebiz 消息通知（可选） -->
+        <dependency>
+            <groupId>io.hiwepy</groupId>
+            <artifactId>jeebiz-cloud-message-core</artifactId>
+            <version>${jeebiz-cloud.version}</version>
+        </dependency>
+
+        <!-- For 钉钉 -->
+        <dependency>
+            <groupId>com.github.hiwepy</groupId>
+            <artifactId>dingtalk-spring-boot-starter</artifactId>
+        </dependency>
+        <!-- For RocketMQ
+        <dependency>
+            <groupId>org.apache.rocketmq</groupId>
+            <artifactId>rocketmq-spring-boot-starter</artifactId>
+        </dependency> -->
+
+    </dependencies>
+
+</project>

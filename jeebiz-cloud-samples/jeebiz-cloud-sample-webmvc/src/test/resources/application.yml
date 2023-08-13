@@ -1,0 +1,11 @@
+server:
+  port: 8070
+spring:
+  application:
+    name: wisdom-webmvc-demo
+  cloud:
+    config:
+      enabled: false
+    nacos:
+      discovery:
+        server-addr: 192.168.31.103:8848

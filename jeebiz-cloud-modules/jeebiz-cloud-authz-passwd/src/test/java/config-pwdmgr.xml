@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+
+
+
+
+	http://www.springframework.org/schema/util http://www.springframework.org/schema/util/spring-util.xsd">
+
+    <!-- 加载密码找回属性实例，可通过  @Value("#{pwdmgrProps['key']}") 方式引用 -->
+    <util:properties id="pwdmgrProps" location="classpath:xxx-passwd.properties" local-override="true"/>
+
+    <!-- 基于缓存服务的验证码服务提供实现 -->
+    <bean id="cachedCaptchaProvider" class="CachedCaptchaProvider">
+        <!-- cacheManager: 缓存服务提供对象，默认使用ehcache缓存 -->
+        <property name="cacheManager" ref="cacheManager"/>
+        <!-- keyProvider: 缓存key提供对象，默认使用 DefaultCacheKeyProvider
+        <property name="keyProvider" ref="keyProvider"/> -->
+        <!-- timeProvider: 时间戳提供对象 -->
+        <property name="timeProvider" ref="oracleTimeProvider"/>
+        <!-- cacheName: 缓存对象名称，默认 PWD_CAPTCHA_CACHE -->
+        <property name="cacheName" value="ZFTAL_PWD_CAPTCHA"/>
+        <!-- format: 时间戳格式化格式，默认 yyyy-MM-dd HH:mm:ss  -->
+        <property name="format" value="yyyy-MM-dd HH:mm:ss"/>
+        <!-- effectTime: 验证码过期时间，默认300秒 -->
+        <property name="effectTime" value="300000"/>
+    </bean>
+
+    <!-- Oracle数据库时间提供者实现 -->
+    <bean id="oracleTimeProvider" class="OracleDatabaseTimeProvider"></bean>
+    <!-- Oracle数据库账号数据提供者实现 -->
+    <bean id="oracleAccountProvider" class="OracleAccountDataInputProvider"></bean>
+    <!-- Oracle数据库密码更新服务实现 -->
+    <bean id="oraclePwdUpdateProvider" class="OraclePwdUpdateProvider">
+        <!-- captchaProvider: 验证码生成服务提供者 -->
+        <property name="captchaProvider" ref="cachedCaptchaProvider"/>
+    </bean>
+    <!-- Oracle数据库配置数据提供者实现 -->
+    <bean id="oraclePwdPropsProvider" class="OraclePwdPropertiesProvider">
+        <!-- props: 基于配置文件的默认配置 -->
+        <property name="defaultProps" ref="pwdmgrProps"/>
+        <!-- propKeys: 指定从参数设置表提取的参数 -->
+        <property name="propKeys">
+            <list>
+                <value>mail.from.desc</value>
+                <value>pwd.mail.subject</value>
+                <value>pwd.mail.content</value>
+                <value>pwd.sms.content</value>
+            </list>
+        </property>
+    </bean>
+
+    <!-- 邮件发送服务提供实现 -->
+    <bean id="emailOutputProvider" class="EmailDataOutputProvider">
+        <!-- propsProvider: 参数配置提供者实现 -->
+        <property name="propsProvider" ref="oraclePwdPropsProvider"/>
+        <!-- outputProvider: 消息输出服务提供者实现，此处采用工厂模式，方便解耦 -->
+        <property name="outputProvider">
+            <bean class="MessageOutputProviderFactory">
+                <constructor-arg index="0">
+                    <value>emailMessageOutputProvider</value>
+                </constructor-arg>
+            </bean>
+        </property>
+    </bean>
+
+    <!-- 邮箱找回密码策略实现 -->
+    <bean id="retakeByEmail" name="retakeByEmail" class="PwdCaptchaByEmailRetakeStrategy">
+        <!-- accountProvider: 账号数据提供者 -->
+        <property name="accountProvider" ref="oracleAccountProvider"/>
+        <!-- captchaProvider: 验证码生成服务提供者 -->
+        <property name="captchaProvider" ref="cachedCaptchaProvider"/>
+        <!-- captchaOutput: 验证码输出对象提供者 -->
+        <property name="captchaOutput" ref="emailOutputProvider"/>
+    </bean>
+
+
+</beans>

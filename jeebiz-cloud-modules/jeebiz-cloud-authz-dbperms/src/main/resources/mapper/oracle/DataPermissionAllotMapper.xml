@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionAllotDao">
+
+    <!-- 开启二级缓存 -->
+    <cache-ref namespace="io.hiwepy.cloud.authz.dbperms.dao.IDataPermissionDao"/>
+
+    <insert id="setRolePerms" parameterType="java.lang.String" flushCache="true">
+        insert into SYS_DATA_PERMS_ROLE_REL(APP_ID, P_ID, R_ID)
+        values (sys_guid(), #{gid}, #{rid})
+    </insert>
+
+    <insert id="setUserPerms" parameterType="java.lang.String" flushCache="true">
+        insert into SYS_DATA_PERMS_USER_REL(APP_ID, P_ID, U_ID)
+        values (sys_guid(), #{pid}, #{uid})
+    </insert>
+
+</mapper>

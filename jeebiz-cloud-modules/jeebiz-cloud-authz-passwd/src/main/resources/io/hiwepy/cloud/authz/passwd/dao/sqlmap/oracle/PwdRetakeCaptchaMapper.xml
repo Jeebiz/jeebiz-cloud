@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="io.hiwepy.cloud.authz.passwd.dao.IPwdRetakeCaptchaDao">
+
+    <resultMap id="PwdRetakeCaptchaMap" type="PwdRetakeCaptchaModel">
+        <id property="id" column="_ID"/>
+        <result property="uuid" column="V_UUID"/>
+        <result property="captcha" column="V_CAPTCHA"/>
+        <result property="time24" column="TIME24"/>
+    </resultMap>
+
+    <select id="getUUID" resultType="java.lang.String" flushCache="true" useCache="false">
+        SELECT sys_guid()
+        FROM DUAL
+    </select>
+
+    <select id="getDatetime" resultType="java.lang.String" flushCache="true" useCache="false">
+        SELECT TO_CHAR(SYSDATE, 'YYYY-MM-DD HH24:Mi:SS')
+        FROM DUAL
+    </select>
+
+    <insert id="insert" parameterType="PwdRetakeCaptchaModel">
+        INSERT INTO SYS_PASSWD_CAPTCHA(V_UUID, V_CAPTCHA, TIME24)
+        VALUES (#{uuid}, #{captcha}, TO_CHAR(sysdate, 'yyyy-MM-dd HH24:MI:ss'))
+    </insert>
+
+    <delete id="delete" parameterType="java.lang.String">
+        DELETE
+        FROM SYS_PASSWD_CAPTCHA t WHERE　t.V_UUID = #{id}
+    </delete>
+
+    <select id="getCaptcha" parameterType="java.lang.String" resultMap="PwdRetakeCaptchaMap">
+        SELECT t.V_ID, t.V_UUID, t.V_CAPTCHA, t.TIME24
+        FROM SYS_PASSWD_CAPTCHA
+        WHERE t.V_UUID = #{uuid}
+    </select>
+
+</mapper>

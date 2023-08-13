@@ -1,0 +1,5 @@
+# Auto Configure
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+io.hiwepy.cloud.autoconfigure.JwtAuthzConfiguration,\
+io.hiwepy.cloud.autoconfigure.WebMvcSwagger2Configuration,\
+io.hiwepy.cloud.autoconfigure.WebSecurityBizConfiguration
