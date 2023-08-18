@@ -6,12 +6,12 @@
     <parent>
         <groupId>io.hiwepy</groupId>
         <artifactId>jeebiz-boot-parent</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
         <relativePath/>
     </parent>
 
     <artifactId>jeebiz-cloud</artifactId>
-    <version>2.0.0-SNAPSHOT</version>
+    <version>3.0.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>jeebiz-cloud</name>
@@ -29,7 +29,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <jeebiz-cloud.version>2.0.0-SNAPSHOT</jeebiz-cloud.version>
+        <jeebiz-cloud.version>3.0.0-SNAPSHOT</jeebiz-cloud.version>
         <spring-cloud.version>2021.0.8</spring-cloud.version> <!-- 2021.0.x aka Jubilee  => 2.6.x, 2.7.x (Starting with 2021.0.3) -->
     </properties>
 
